@@ -608,6 +608,49 @@ st.caption("Disclaimer: This tool is for educational purposes only. Always do yo
 
 
 
+# Display metrics
+col1, col2, col3, col4, col5 = st.columns(5)
+
+    with col1:
+        st.markdown("""
+        <div class="metric-container">
+            <div class="metric-label">Total Return</div>
+            <div class="metric-value">{:.2f}%</div>
+        </div>
+        """.format(output['Return [%]']), unsafe_allow_html=True)
+
+    with col2:
+        st.markdown("""
+        <div class="metric-container">
+            <div class="metric-label">Sharpe Ratio</div>
+            <div class="metric-value">{:.2f}</div>
+        </div>
+        """.format(output['Sharpe Ratio']), unsafe_allow_html=True)
+
+    with col3:
+        st.markdown("""
+        <div class="metric-container">
+            <div class="metric-label">Max Drawdown</div>
+            <div class="metric-value">{:.2f}%</div>
+        </div>
+        """.format(output['Max. Drawdown [%]']), unsafe_allow_html=True)
+
+    with col4:
+        st.markdown("""
+        <div class="metric-container">
+            <div class="metric-label">Strategy vs. Buy & Hold</div>
+            <div class="metric-value">{:.2f}%</div>
+        </div>
+        """.format(output['Return [%]'] - output['Buy & Hold Return [%]']), unsafe_allow_html=True)
+
+    with col5:
+        st.markdown("""
+        <div class="metric-container">
+            <div class="metric-label">Win Rate</div>
+            <div class="metric-value">{:.2f}%</div>
+        </div>
+        """.format(output['Win Rate [%]']), unsafe_allow_html=True)
+
 
 
 
