@@ -383,7 +383,27 @@ def strategy_params_and_viz(strategy):
         st.error(f"Strategy '{strategy}' not implemented.")
 
 
-
+def strategy_viz(strategy):
+    if strategy == 'Buy and Hold':
+        buy_and_hold_viz()
+    elif strategy == 'SMA Cross':
+        sma_cross_viz()
+    elif strategy == 'RSI':
+        rsi_viz()
+    elif strategy == 'MACD':
+        macd_viz()
+    elif strategy == 'Bollinger Bands':
+        bollinger_bands_viz()
+    elif strategy == 'Mean Reversion':
+        mean_reversion_viz()
+    elif strategy == 'Momentum':
+        momentum_viz()
+    elif strategy == 'VWAP':
+        vwap_viz()
+    elif strategy == 'Stochastic':
+        stochastic_viz()
+    else:
+        st.error(f"Strategy '{strategy}' not implemented.")
 
 
 
