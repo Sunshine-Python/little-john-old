@@ -1,6 +1,6 @@
 [theme]
 
-primaryColor = "#00008b"  # dark blue
+primaryColor = "#0d3d66"  # dark blue
 backgroundColor = "#f2f2f2"  # light gray
 secondaryBackgroundColor = "rgba(173, 216, 230, 0.5)"  # light blue
 textColor = "#000000"  # black
@@ -8,5 +8,4 @@ font = "serif"
 
 # Optional: Add a custom theme color for secondary text
 [customTheme]
-# secondaryTextColor = "#00008b"  # dark blue
-
+# secondaryTextColor = "#0d3d66"  # dark blue
