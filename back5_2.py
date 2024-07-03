@@ -497,7 +497,7 @@ if ticker_data is not None and not ticker_data.empty:
 
         with row1_col2:
             st.subheader("Visualization")
-            strategy_viz()
+            strategy_viz(strategy_option)
 
         with row1_col3:
             st.subheader('Equity Curve')
@@ -506,7 +506,7 @@ if ticker_data is not None and not ticker_data.empty:
             st.plotly_chart(fig_equity, use_container_width=True)
 
         # Second row: Performance Metrics next to Trade Log
-        row2_col1, row2_col2 = st.columns([1, 1])
+        row2_col1, row2_col2 = st.columns(2)
 
         with row2_col1:
             st.subheader('Performance Metrics')
@@ -534,6 +534,7 @@ if ticker_data is not None and not ticker_data.empty:
         with row2_col2:
             st.subheader('Trade Log')
             st.dataframe(output['_trades'], use_container_width=True, height=300)
+
 
         # Bar chart for return comparison
         fig_return_comparison = go.Figure(data=[
