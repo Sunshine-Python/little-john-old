@@ -434,7 +434,7 @@ h1, h2, h3 {
 </style>
 """, unsafe_allow_html=True)
 
-st.title('📈 Advanced Stock Trading Strategy Backtester')
+st.title('Advanced Stock Trading Strategy Backtester')
 
 
 
