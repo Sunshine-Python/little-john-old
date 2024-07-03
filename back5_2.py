@@ -598,9 +598,6 @@ st.caption("Disclaimer: This tool is for educational purposes only. Always do yo
 
 
 
-# Load the custom CSS
-with open("/Users/carenawilson/Downloads/style.css") as css:
-    st.markdown(f'<style>{css.read()}</style>', unsafe_allow_html=True)
 
 
 
