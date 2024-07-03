@@ -7,7 +7,6 @@ h1  {
 
 h2, h3, h4, h5, h6 {
     color: #0d3d66 !important;  /* Dark Blue with !important */
-    margin-top: 10px; 
 }
 
 p, span, div {
