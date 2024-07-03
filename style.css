@@ -13,3 +13,12 @@ p, span, div {
     color: #000000 !important;  /* Black with !important */
     font-family: serif !important;  /* Serif Font with !important */
 }
+
+.metric-container {
+    background-color: #ffffff;
+    border: 1px solid #e6e6e6;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+}
