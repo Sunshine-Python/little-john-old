@@ -1,8 +1,10 @@
-# Style Sheet
 
-.stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4, .stMarkdown h5, .stMarkdown h6 {
-    color: #000000;  /* Black */
+/* Style Sheet */
+h1, h2, h3, h4, h5, h6 {
+    color: #000000 !important;  /* Black with !important */
 }
-.stMarkdown p, .stMarkdown span, .stMarkdown div {
-    color: #000000;  /* Black */
+
+p, span, div {
+    color: #000000 !important;  /* Black with !important */
+    font-family: serif !important;  /* Serif Font with !important */
 }
