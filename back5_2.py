@@ -9,6 +9,7 @@ import ta
 import plotly.graph_objects as go
 from backtesting.lib import crossover
 
+st.set_page_config(layout="wide")
 
 # Include custom CSS
 with open("style.css") as css:
@@ -412,8 +413,6 @@ def strategy_params_and_viz(strategy):
 
 
 
-
-st.set_page_config(layout="wide")
 
 
 
