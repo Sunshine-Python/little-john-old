@@ -497,83 +497,92 @@ if ticker_data is not None and not ticker_data.empty:
             st.subheader("Strategy Parameters and Visualization")
             strategy_params_and_viz(strategy_option)
 
-    with row1_col2:
-        with equity_curve_container:
-            st.subheader('Equity Curve')
-            fig_equity = go.Figure(data=[go.Scatter(x=output['_equity_curve'].index, y=output['_equity_curve']['Equity'], mode='lines')])
-            fig_equity.update_layout(title=f'{ticker} Equity Curve', xaxis_title='Date', yaxis_title='Equity', height=400)
-            st.plotly_chart(fig_equity, use_container_width=True)
+    try:
+        selected_strategy = strategy_map[strategy_option]
+        bt = Backtest(ticker_data, selected_strategy, cash=cash, commission=commission)
+        output = bt.run()
 
-    # Second row: Performance Metrics next to Trade Log
-    row2_col1, row2_col2 = st.columns(2)
+        with row1_col2:
+            with equity_curve_container:
+                st.subheader('Equity Curve')
+                fig_equity = go.Figure(data=[go.Scatter(x=output['_equity_curve'].index, y=output['_equity_curve']['Equity'], mode='lines')])
+                fig_equity.update_layout(title=f'{ticker} Equity Curve', xaxis_title='Date', yaxis_title='Equity', height=400)
+                st.plotly_chart(fig_equity, use_container_width=True)
 
-    with row2_col1:
-        with performance_metrics_container:
-            st.subheader('Performance Metrics')
-            
-            # Select key metrics
-            key_metrics = ['Start', 'End', 'Duration', 'Exposure Time [%]', 'Equity Final [$]', 'Equity Peak [$]', 
-                        'Return [%]', 'Buy & Hold Return [%]', 'Return (Ann.) [%]', 'Volatility (Ann.) [%]', 
-                        'Sharpe Ratio', 'Sortino Ratio', 'Calmar Ratio', 'Max. Drawdown [%]', 'Avg. Drawdown [%]', 
-                        'Max. Drawdown Duration', 'Avg. Drawdown Duration', 'Trades', 'Win Rate [%]', 
-                        'Best Trade [%]', 'Worst Trade [%]', 'Avg. Trade [%]', 'Max. Trade Duration', 
-                        'Avg. Trade Duration', 'Profit Factor', 'Expectancy [%]']
+        # Second row: Performance Metrics next to Trade Log
+        row2_col1, row2_col2 = st.columns(2)
 
-            metrics = output.drop(['_strategy', '_equity_curve', '_trades'])
-            selected_metrics = {k: metrics[k] for k in key_metrics if k in metrics}
-            df_metrics = pd.DataFrame(selected_metrics, index=['Value']).T
+        with row2_col1:
+            with performance_metrics_container:
+                st.subheader('Performance Metrics')
+                
+                # Select key metrics
+                key_metrics = ['Start', 'End', 'Duration', 'Exposure Time [%]', 'Equity Final [$]', 'Equity Peak [$]', 
+                            'Return [%]', 'Buy & Hold Return [%]', 'Return (Ann.) [%]', 'Volatility (Ann.) [%]', 
+                            'Sharpe Ratio', 'Sortino Ratio', 'Calmar Ratio', 'Max. Drawdown [%]', 'Avg. Drawdown [%]', 
+                            'Max. Drawdown Duration', 'Avg. Drawdown Duration', 'Trades', 'Win Rate [%]', 
+                            'Best Trade [%]', 'Worst Trade [%]', 'Avg. Trade [%]', 'Max. Trade Duration', 
+                            'Avg. Trade Duration', 'Profit Factor', 'Expectancy [%]']
 
-            # Display key performance indicators
-            metric_1 = st.metric("Total Return", f"{df_metrics.loc['Return [%]', 'Value']:.2f}%")
-            metric_2 = st.metric("Sharpe Ratio", f"{df_metrics.loc['Sharpe Ratio', 'Value']:.2f}")
-            metric_3 = st.metric("Max Drawdown", f"{df_metrics.loc['Max. Drawdown [%]', 'Value']:.2f}%")
+                metrics = output.drop(['_strategy', '_equity_curve', '_trades'])
+                selected_metrics = {k: metrics[k] for k in key_metrics if k in metrics}
+                df_metrics = pd.DataFrame(selected_metrics, index=['Value']).T
 
-            # Display comparison to Buy & Hold
-            strategy_return = df_metrics.loc['Return [%]', 'Value']
-            bh_return = df_metrics.loc['Buy & Hold Return [%]', 'Value']
-            outperformance = strategy_return - bh_return
-            metric_4 = st.metric("Strategy vs. Buy & Hold", f"{outperformance:.2f}%", 
-                    delta=f"{outperformance:.2f}%", delta_color="normal")
+                # Display key performance indicators
+                metric_1 = st.metric("Total Return", f"{df_metrics.loc['Return [%]', 'Value']:.2f}%")
+                metric_2 = st.metric("Sharpe Ratio", f"{df_metrics.loc['Sharpe Ratio', 'Value']:.2f}")
+                metric_3 = st.metric("Max Drawdown", f"{df_metrics.loc['Max. Drawdown [%]', 'Value']:.2f}%")
 
-            # Win Rate
-            metric_5 = st.metric("Win Rate", f"{df_metrics.loc['Win Rate [%]', 'Value']:.2f}%")
+                # Display comparison to Buy & Hold
+                strategy_return = df_metrics.loc['Return [%]', 'Value']
+                bh_return = df_metrics.loc['Buy & Hold Return [%]', 'Value']
+                outperformance = strategy_return - bh_return
+                metric_4 = st.metric("Strategy vs. Buy & Hold", f"{outperformance:.2f}%", 
+                        delta=f"{outperformance:.2f}%", delta_color="normal")
 
-    with row2_col2:
-        with trade_log_container:
-            st.subheader('Trade Log')
-            st.dataframe(output['_trades'], use_container_width=True, height=300)
+                # Win Rate
+                metric_5 = st.metric("Win Rate", f"{df_metrics.loc['Win Rate [%]', 'Value']:.2f}%")
 
-    # Bar chart for return comparison
-    fig_return_comparison = go.Figure(data=[
-        go.Bar(name='Strategy', x=['Return'], y=[strategy_return]),
-        go.Bar(name='Buy & Hold', x=['Return'], y=[bh_return])
-    ])
-    fig_return_comparison.update_layout(title='Strategy vs. Buy & Hold Return Comparison')
-    st.plotly_chart(fig_return_comparison, use_container_width=True)
+        with row2_col2:
+            with trade_log_container:
+                st.subheader('Trade Log')
+                st.dataframe(output['_trades'], use_container_width=True, height=300)
 
-    # Radar chart for key metrics
-    radar_metrics = ['Return [%]', 'Sharpe Ratio', 'Sortino Ratio', 'Calmar Ratio', 'Win Rate [%]']
-    radar_values = [df_metrics.loc[metric, 'Value'] for metric in radar_metrics]
+        # Bar chart for return comparison
+        fig_return_comparison = go.Figure(data=[
+            go.Bar(name='Strategy', x=['Return'], y=[strategy_return]),
+            go.Bar(name='Buy & Hold', x=['Return'], y=[bh_return])
+        ])
+        fig_return_comparison.update_layout(title='Strategy vs. Buy & Hold Return Comparison')
+        st.plotly_chart(fig_return_comparison, use_container_width=True)
 
-    fig_radar = go.Figure(data=go.Scatterpolar(
-        r=radar_values,
-        theta=radar_metrics,
-        fill='toself'
-    ))
-    fig_radar.update_layout(
-        polar=dict(
-            radialaxis=dict(visible=True, range=[0, max(radar_values)])
-        ),
-        showlegend=False,
-        title='Strategy Performance Radar'
-    )
-    st.plotly_chart(fig_radar, use_container_width=True)
+        # Radar chart for key metrics
+        radar_metrics = ['Return [%]', 'Sharpe Ratio', 'Sortino Ratio', 'Calmar Ratio', 'Win Rate [%]']
+        radar_values = [df_metrics.loc[metric, 'Value'] for metric in radar_metrics]
 
-    # Display all metrics in an expandable section
-    with st.expander("View All Metrics"):
-        st.dataframe(df_metrics, use_container_width=True)
+        fig_radar = go.Figure(data=go.Scatterpolar(
+            r=radar_values,
+            theta=radar_metrics,
+            fill='toself'
+        ))
+        fig_radar.update_layout(
+            polar=dict(
+                radialaxis=dict(visible=True, range=[0, max(radar_values)])
+            ),
+            showlegend=False,
+            title='Strategy Performance Radar'
+        )
+        st.plotly_chart(fig_radar, use_container_width=True)
+
+        # Display all metrics in an expandable section
+        with st.expander("View All Metrics"):
+            st.dataframe(df_metrics, use_container_width=True)
+    except KeyError:
+        st.error(f"Strategy '{strategy_option}' not implemented. Please select another strategy.")
+
 else:
     st.error("Error fetching data for the given ticker. Please check the ticker symbol and date range.")
+
 
 
 
