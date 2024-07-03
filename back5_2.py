@@ -607,6 +607,64 @@ st.caption("Disclaimer: This tool is for educational purposes only. Always do yo
 
 
 
+# First row after title
+col_strategy = st.columns(1)[0]
+with col_strategy:
+    st.subheader("Strategy Parameters and Visualization")
+    strategy_params_and_viz(strategy_option)
+
+# Second row
+col_graphs = st.columns(1)[0]
+with col_graphs:
+    st.subheader('Equity Curve')
+    fig_equity = go.Figure(data=[go.Scatter(x=output['_equity_curve'].index, y=output['_equity_curve']['Equity'], mode='lines')])
+    fig_equity.update_layout(title=f'{ticker} Equity Curve', xaxis_title='Date', yaxis_title='Equity', height=400)
+    st.plotly_chart(fig_equity, use_container_width=True)
+
+    st.subheader('Trade Log')
+    st.dataframe(output['_trades'], use_container_width=True, height=300)
+
+# Third row with 5 metrics
+metric_cols = st.columns(5)
+with metric_cols[0]:
+    st.markdown(f"""
+    <div class="metric-container">
+        <div class="metric-label">Total Return</div>
+        <div class="metric-value">{output['Return [%]']:.2f}%</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+with metric_cols[1]:
+    st.markdown(f"""
+    <div class="metric-container">
+        <div class="metric-label">Sharpe Ratio</div>
+        <div class="metric-value">{output['Sharpe Ratio']:.2f}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+with metric_cols[2]:
+    st.markdown(f"""
+    <div class="metric-container">
+        <div class="metric-label">Max Drawdown</div>
+        <div class="metric-value">{output['Max. Drawdown [%]']:.2f}%</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+with metric_cols[3]:
+    st.markdown(f"""
+    <div class="metric-container">
+        <div class="metric-label">Strategy vs. Buy & Hold</div>
+        <div class="metric-value">{output['Return [%]'] - output['Buy & Hold Return [%]']:.2f}%</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+with metric_cols[4]:
+    st.markdown(f"""
+    <div class="metric-container">
+        <div class="metric-label">Win Rate</div>
+        <div class="metric-value">{output['Win Rate [%]']:.2f}%</div>
+    </div>
+    """, unsafe_allow_html=True)
 
 
 
