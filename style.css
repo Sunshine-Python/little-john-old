@@ -1,9 +1,8 @@
 # Style Sheet
 
 .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4, .stMarkdown h5, .stMarkdown h6 {
-    color: #00008b;  /* Dark Blue */
+    color: #000000;  /* Black */
 }
 .stMarkdown p, .stMarkdown span, .stMarkdown div {
     color: #000000;  /* Black */
-    font-family: serif;  /* Serif Font */
 }
