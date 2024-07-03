@@ -487,7 +487,7 @@ if ticker_data is not None and not ticker_data.empty:
    
 
 
- # {Create main layout with adjusted ratios
+ # Create main layout with adjusted ratios
     col_strategy, col_results = st.columns([1, 3])
 
     with col_strategy:
@@ -576,7 +576,7 @@ if ticker_data is not None and not ticker_data.empty:
             st.error(f"Strategy '{strategy_option}' not implemented. Please select another strategy.")
 
 else:
-    st.error("Error fetching data for the given ticker. Please check the ticker symbol and date range.") }
+    st.error("Error fetching data for the given ticker. Please check the ticker symbol and date range.") 
 
 
 
