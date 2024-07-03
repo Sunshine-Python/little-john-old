@@ -1,6 +1,0 @@
-streamlit
-yfinance
-backtesting
-pandas
-ta
-plotly
