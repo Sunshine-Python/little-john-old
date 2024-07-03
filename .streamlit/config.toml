@@ -2,7 +2,7 @@
 
 primaryColor = "#00008b"  # dark blue
 backgroundColor = "#f2f2f2"  # light gray
-secondaryBackgroundColor = "#add8e6"  # light blue
+secondaryBackgroundColor = "rgba(173, 216, 230, 0.5)"  # light blue
 textColor = "#000000"  # black
 font = "serif"
 
