@@ -489,7 +489,6 @@ if ticker_data is not None and not ticker_data.empty:
         'Stochastic': StochasticStrategy
     }
 
-    # Create main layout with adjusted ratios
     with strategy_container:
         st.subheader("Strategy Parameters and Visualization")
         strategy_params_and_viz(strategy_option)
@@ -570,9 +569,11 @@ if ticker_data is not None and not ticker_data.empty:
                 st.dataframe(df_metrics, use_container_width=True)
     except KeyError:
         st.error(f"Strategy '{strategy_option}' not implemented. Please select another strategy.")
-
 else:
     st.error("Error fetching data for the given ticker. Please check the ticker symbol and date range.")
+
+
+
 
 
 
