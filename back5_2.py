@@ -440,7 +440,7 @@ st.title('📈 Advanced Stock Trading Strategy Backtester')
 
 # Sidebar for user inputs
 
-logo_url = "/Users/carenawilson/Documents/7. Aktuelles Semester/FIEP - Deliverables/little-john-logo.png"
+logo_url = "https://github.com/Sunshine-Python/little-john/blob/main/little-john-logo.png"
 st.sidebar.image(logo_url, use_column_width=True)
 
 
