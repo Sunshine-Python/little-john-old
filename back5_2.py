@@ -16,11 +16,10 @@ def fetch_data(ticker, start_date, end_date):
     """
     Fetches historical stock data from Yahoo Finance.
     """
-    data = yf.download(ticker, start=start_date, end=end_date)
+    data = yf.download(ticker, start=start_date, end=end_date, progress=False)
     data = data.drop(columns=['Adj Close'])
     data.columns = ['Open', 'High', 'Low', 'Close', 'Volume']
     return data
-
 
 
 
