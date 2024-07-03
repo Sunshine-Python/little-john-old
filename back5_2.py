@@ -489,18 +489,18 @@ if ticker_data is not None and not ticker_data.empty:
         'Stochastic': StochasticStrategy
     }
 
-    # First row: Strategy Parameters and Visualization next to Equity Curve
-    row1_col1, row1_col2 = st.columns(2)
-
-    with row1_col1:
-        with strategy_container:
-            st.subheader("Strategy Parameters and Visualization")
-            strategy_params_and_viz(strategy_option)
-
     try:
         selected_strategy = strategy_map[strategy_option]
         bt = Backtest(ticker_data, selected_strategy, cash=cash, commission=commission)
         output = bt.run()
+
+        # First row: Strategy Parameters and Visualization next to Equity Curve
+        row1_col1, row1_col2 = st.columns(2)
+
+        with row1_col1:
+            with strategy_container:
+                st.subheader("Strategy Parameters and Visualization")
+                strategy_params_and_viz(strategy_option)
 
         with row1_col2:
             with equity_curve_container:
@@ -582,6 +582,7 @@ if ticker_data is not None and not ticker_data.empty:
 
 else:
     st.error("Error fetching data for the given ticker. Please check the ticker symbol and date range.")
+
 
 
 
