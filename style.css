@@ -21,5 +21,20 @@ p, span, div {
     padding: 10px;
     margin-bottom: 10px;
     text-align: center;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+}
+.metric-label {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333333;
+}
+.metric-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #000000;
+}
+.metric-delta {
+    font-size: 14px;
+    color: #888888;
 }
 
