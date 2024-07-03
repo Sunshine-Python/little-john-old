@@ -465,6 +465,12 @@ with st.sidebar:
 
 
 
+strategy_container = st.container()
+equity_curve_container = st.container()
+performance_metrics_container = st.container()
+trade_log_container = st.container()
+
+
 
 # Main content area
 ticker_data = fetch_data(ticker, start_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d'))
@@ -597,53 +603,6 @@ st.caption("Disclaimer: This tool is for educational purposes only. Always do yo
 
 
 
-
-# Create containers for the layout
-strategy_container = st.container()
-equity_curve_container = st.container()
-performance_metrics_container = st.container()
-trade_log_container = st.container()
-
-# Fill containers with content
-with strategy_container:
-    col_strategy = st.columns(1)
-    with col_strategy[0]:
-        st.subheader("Strategy Parameters and Visualization")
-        strategy_params_and_viz(strategy_option)
-
-with equity_curve_container:
-    col_equity = st.columns(1)
-    with col_equity[0]:
-        st.subheader('Equity Curve')
-        fig_equity = go.Figure(data=[go.Scatter(x=output['_equity_curve'].index, y=output['_equity_curve']['Equity'], mode='lines')])
-        fig_equity.update_layout(title=f'{ticker} Equity Curve', xaxis_title='Date', yaxis_title='Equity', height=400)
-        st.plotly_chart(fig_equity, use_container_width=True)
-
-with trade_log_container:
-    col_trade_log = st.columns(1)
-    with col_trade_log[0]:
-        st.subheader('Trade Log')
-        st.dataframe(output['_trades'], use_container_width=True, height=300)
-
-with performance_metrics_container:
-    col_performance = st.columns(1)
-    with col_performance[0]:
-        st.subheader('Performance Metrics')
-        
-        # Display key performance indicators
-        metric_1 = st.metric("Total Return", f"{df_metrics.loc['Return [%]', 'Value']:.2f}%")
-        metric_2 = st.metric("Sharpe Ratio", f"{df_metrics.loc['Sharpe Ratio', 'Value']:.2f}")
-        metric_3 = st.metric("Max Drawdown", f"{df_metrics.loc['Max. Drawdown [%]', 'Value']:.2f}%")
-        
-        # Display comparison to Buy & Hold
-        strategy_return = df_metrics.loc['Return [%]', 'Value']
-        bh_return = df_metrics.loc['Buy & Hold Return [%]', 'Value']
-        outperformance = strategy_return - bh_return
-        metric_4 = st.metric("Strategy vs. Buy & Hold", f"{outperformance:.2f}%", 
-                delta=f"{outperformance:.2f}%", delta_color="normal")
-        
-        # Win Rate
-        metric_5 = st.metric("Win Rate", f"{df_metrics.loc['Win Rate [%]', 'Value']:.2f}%")
 
 
 
