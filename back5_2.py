@@ -360,10 +360,8 @@ def stochastic_viz():
 
 
 
-def strategy_params_and_viz(strategy):
-    if strategy == 'Buy and Hold':
-        buy_and_hold_viz()
-    elif strategy == 'SMA Cross':
+def strategy_params(strategy):
+    if strategy == 'SMA Cross':
         sma_cross_viz()
     elif strategy == 'RSI':
         rsi_viz()
@@ -380,7 +378,8 @@ def strategy_params_and_viz(strategy):
     elif strategy == 'Stochastic':
         stochastic_viz()
     else:
-        st.error(f"Strategy '{strategy}' not implemented.")
+        st.write("This strategy has no parameters to adjust.")
+
 
 
 def strategy_viz(strategy):
@@ -528,7 +527,7 @@ if ticker_data is not None and not ticker_data.empty:
         with row1_col1:
             st.subheader("Strategy Parameters")
             strategy_description(strategy_option)
-            strategy_params_and_viz(strategy_option)
+            strategy_params(strategy_option)
 
         with row1_col2:
             st.subheader("Visualization")
@@ -601,6 +600,7 @@ if ticker_data is not None and not ticker_data.empty:
             st.dataframe(df_metrics, use_container_width=True)
     except KeyError:
         st.error(f"Strategy '{strategy_option}' not implemented. Please select another strategy.")
+
 
 
 
