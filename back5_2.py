@@ -465,6 +465,7 @@ with st.sidebar:
 
 
 
+
 # Main content area
 ticker_data = fetch_data(ticker, start_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d'))
 
@@ -488,20 +489,24 @@ if ticker_data is not None and not ticker_data.empty:
         output = bt.run()
 
         # First row: Strategy Parameters and Visualization next to Equity Curve
-        row1_col1, row1_col2 = st.columns(2)
+        row1_col1, row1_col2, row1_col3 = st.columns([1, 2, 2])
 
         with row1_col1:
-            st.subheader("Strategy Parameters and Visualization")
+            st.subheader("Strategy Parameters")
             strategy_params_and_viz(strategy_option)
 
         with row1_col2:
+            st.subheader("Visualization")
+            strategy_viz()
+
+        with row1_col3:
             st.subheader('Equity Curve')
             fig_equity = go.Figure(data=[go.Scatter(x=output['_equity_curve'].index, y=output['_equity_curve']['Equity'], mode='lines')])
             fig_equity.update_layout(title=f'{ticker} Equity Curve', xaxis_title='Date', yaxis_title='Equity', height=400)
             st.plotly_chart(fig_equity, use_container_width=True)
 
         # Second row: Performance Metrics next to Trade Log
-        row2_col1, row2_col2 = st.columns(2)
+        row2_col1, row2_col2 = st.columns([1, 1])
 
         with row2_col1:
             st.subheader('Performance Metrics')
