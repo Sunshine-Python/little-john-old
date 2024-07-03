@@ -607,8 +607,26 @@ st.caption("Disclaimer: This tool is for educational purposes only. Always do yo
 
 
 
-# First row: Strategy Parameters and Visualization + Visualization Graph
-col1, col2 = st.columns([1, 3])
+# Main content area
+ticker_data = fetch_data(ticker, start_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d'))
+
+if ticker_data is not None and not ticker_data.empty:
+    # Map strategy names to classes
+    strategy_map = {
+        'Buy and Hold': BuyAndHoldStrategy,
+        'SMA Cross': SmaCross,
+        'RSI': RsiStrategy,
+        'MACD': MacdStrategy,
+        'Bollinger Bands': BollingerBandsStrategy,
+        'Mean Reversion': MeanReversionStrategy,
+        'Momentum': MomentumStrategy,
+        'VWAP': VwapStrategy,
+        'Stochastic': StochasticStrategy
+    }
+
+
+    # First row: Strategy Parameters and Visualization + Visualization Graph
+    col1, col2 = st.columns([1, 3])
     with col1:
         st.subheader("Strategy Parameters and Visualization")
         strategy_params_and_viz(strategy_option)
@@ -634,8 +652,8 @@ col1, col2 = st.columns([1, 3])
         elif strategy_option == 'Stochastic':
             stochastic_viz()
 
-# Second row: Equity Curve, Performance Metrics, and Trade Log
-col1, col2, col3 = st.columns([2, 2, 3])
+    # Second row: Equity Curve, Performance Metrics, and Trade Log
+    col1, col2, col3 = st.columns([2, 2, 3])
     with col1:
         st.subheader('Equity Curve')
         fig_equity = go.Figure(data=[go.Scatter(x=output['_equity_curve'].index, y=output['_equity_curve']['Equity'], mode='lines')])
