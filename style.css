@@ -1,7 +1,11 @@
 
 /* Style Sheet */
-h1, h2, h3, h4, h5, h6 {
+h1, h3, h4, h5, h6 {
     color: #000000 !important;  /* Black with !important */
+}
+
+h2, {
+    color: #0d3d66 !important;  /* Black with !important */
 }
 
 p, span, div {
