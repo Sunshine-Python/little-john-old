@@ -8,5 +8,5 @@ font = "serif"
 
 # Optional: Add a custom theme color for secondary text
 [customTheme]
-secondaryTextColor = "#00008b"  # dark blue
+# secondaryTextColor = "#00008b"  # dark blue
 
