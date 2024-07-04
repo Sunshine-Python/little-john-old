@@ -66,7 +66,7 @@ p, span, div {
 
 /* Ensure all metric containers have the same height */
 .metric-container {
-    height: 100px;  /* Adjust as necessary */
+    height: 80px;  /* Adjust as necessary */
 }
 
 
