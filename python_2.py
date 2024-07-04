@@ -89,8 +89,8 @@ def sma_cross_viz():
     fig.add_trace(go.Scatter(x=x, y=y, mode='lines', name='Price'))
     fig.add_trace(go.Scatter(x=x[n1-1:], y=short_sma, mode='lines', name=f'SMA({n1})'))
     fig.add_trace(go.Scatter(x=x[n2-1:], y=long_sma, mode='lines', name=f'SMA({n2})'))
-    fig.update_layout(title='SMA Cross Visualization', xaxis_title='Time', yaxis_title='Price', height=300, plot_bgcolor='white',
-        paper_bgcolor='white', margin=dict(l=30, r=30))
+    fig.update_layout(title='SMA Cross Visualization', xaxis_title='Time', yaxis_title='Price', height=300, plot_bgcolor='#f2f2f2',
+        paper_bgcolor='#f2f2f2', margin=dict(l=30, r=30))
     st.plotly_chart(fig)
 
 # RSI Strategy
