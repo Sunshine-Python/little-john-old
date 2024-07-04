@@ -89,7 +89,8 @@ def sma_cross_viz():
     fig.add_trace(go.Scatter(x=x, y=y, mode='lines', name='Price'))
     fig.add_trace(go.Scatter(x=x[n1-1:], y=short_sma, mode='lines', name=f'SMA({n1})'))
     fig.add_trace(go.Scatter(x=x[n2-1:], y=long_sma, mode='lines', name=f'SMA({n2})'))
-    fig.update_layout(title='SMA Cross Visualization', xaxis_title='Time', yaxis_title='Price', height=300)
+    fig.update_layout(title='SMA Cross Visualization', xaxis_title='Time', yaxis_title='Price', height=300, plot_bgcolor='white',
+        paper_bgcolor='white')
     st.plotly_chart(fig)
 
 # RSI Strategy
@@ -126,7 +127,8 @@ def rsi_viz():
     fig.add_trace(go.Scatter(x=x, y=rsi, mode='lines', name='RSI'))
     fig.add_shape(type="line", x0=0, y0=st.session_state.get('rsi_overbought', 70), x1=100, y1=st.session_state.get('rsi_overbought', 70), line=dict(color="red", width=2, dash="dash"))
     fig.add_shape(type="line", x0=0, y0=st.session_state.get('rsi_oversold', 30), x1=100, y1=st.session_state.get('rsi_oversold', 30), line=dict(color="green", width=2, dash="dash"))
-    fig.update_layout(title='RSI Visualization', xaxis_title='Time', yaxis_title='RSI', height=300)
+    fig.update_layout(title='RSI Visualization', xaxis_title='Time', yaxis_title='RSI', height=300, plot_bgcolor='white',
+        paper_bgcolor='white')
     st.plotly_chart(fig)
 
 # MACD Strategy
@@ -168,7 +170,8 @@ def macd_viz():
     fig.add_trace(go.Scatter(x=x, y=macd.macd(), mode='lines', name='MACD'))
     fig.add_trace(go.Scatter(x=x, y=macd.macd_signal(), mode='lines', name='Signal'))
     fig.add_bar(x=x, y=macd.macd_diff(), name='Histogram')
-    fig.update_layout(title='MACD Visualization', xaxis_title='Time', yaxis_title='Value', height=300)
+    fig.update_layout(title='MACD Visualization', xaxis_title='Time', yaxis_title='Value', height=300, plot_bgcolor='white',
+        paper_bgcolor='white')
     st.plotly_chart(fig)
 
 # Bollinger Bands Strategy
@@ -207,7 +210,8 @@ def bollinger_bands_viz():
     fig.add_trace(go.Scatter(x=x, y=bb.bollinger_hband(), mode='lines', name='Upper Band'))
     fig.add_trace(go.Scatter(x=x, y=bb.bollinger_mavg(), mode='lines', name='Middle Band'))
     fig.add_trace(go.Scatter(x=x, y=bb.bollinger_lband(), mode='lines', name='Lower Band'))
-    fig.update_layout(title='Bollinger Bands Visualization', xaxis_title='Time', yaxis_title='Price', height=300)
+    fig.update_layout(title='Bollinger Bands Visualization', xaxis_title='Time', yaxis_title='Price', height=300, plot_bgcolor='white',
+        paper_bgcolor='white')
     st.plotly_chart(fig)
 
 # Mean Reversion Strategy
@@ -243,7 +247,8 @@ def mean_reversion_viz():
     fig.add_trace(go.Scatter(x=x[length-1:], y=sma, mode='lines', name='SMA'))
     fig.add_trace(go.Scatter(x=x[length-1:], y=sma+std, mode='lines', name='Upper Band'))
     fig.add_trace(go.Scatter(x=x[length-1:], y=sma-std, mode='lines', name='Lower Band'))
-    fig.update_layout(title='Mean Reversion Visualization', xaxis_title='Time', yaxis_title='Price', height=300)
+    fig.update_layout(title='Mean Reversion Visualization', xaxis_title='Time', yaxis_title='Price', height=300, plot_bgcolor='white',
+        paper_bgcolor='white')
     st.plotly_chart(fig)
 
 # Momentum Strategy
@@ -273,7 +278,8 @@ def momentum_viz():
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=x[period:], y=momentum[period:], mode='lines', name='Momentum'))
     fig.add_shape(type="line", x0=period, y0=0, x1=100, y1=0, line=dict(color="red", width=2, dash="dash"))
-    fig.update_layout(title='Momentum Visualization', xaxis_title='Time', yaxis_title='Momentum', height=300)
+    fig.update_layout(title='Momentum Visualization', xaxis_title='Time', yaxis_title='Momentum', height=300, plot_bgcolor='white',
+        paper_bgcolor='white')
     st.plotly_chart(fig)
 
 # VWAP Strategy
@@ -303,7 +309,8 @@ def vwap_viz():
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=x, y=price, mode='lines', name='Price'))
     fig.add_trace(go.Scatter(x=x, y=vwap, mode='lines', name='VWAP'))
-    fig.update_layout(title='VWAP Visualization', xaxis_title='Time', yaxis_title='Price', height=300)
+    fig.update_layout(title='VWAP Visualization', xaxis_title='Time', yaxis_title='Price', height=300, plot_bgcolor='white',
+        paper_bgcolor='white')
     st.plotly_chart(fig)
 
 # Stochastic Strategy
@@ -347,7 +354,8 @@ def stochastic_viz():
     fig.add_trace(go.Scatter(x=x, y=stoch.stoch_signal(), mode='lines', name='%D'))
     fig.add_shape(type="line", x0=0, y0=80, x1=100, y1=80, line=dict(color="red", width=2, dash="dash"))
     fig.add_shape(type="line", x0=0, y0=20, x1=100, y1=20, line=dict(color="green", width=2, dash="dash"))
-    fig.update_layout(title='Stochastic Oscillator Visualization', xaxis_title='Time', yaxis_title='Value', height=300)
+    fig.update_layout(title='Stochastic Oscillator Visualization', xaxis_title='Time', yaxis_title='Value', height=300, plot_bgcolor='white',
+        paper_bgcolor='white')
     st.plotly_chart(fig)
 
 def strategy_params_and_viz(strategy):
