@@ -470,7 +470,7 @@ def display_metric(label, value, delta=None, delta_color="normal", show_arrow=Fa
         st.markdown(f"""
         <div class="metric-container">
             <div class="metric-label">{label}</div>
-            <div class="metric-value">{value} <span style="color: {color};">{arrow}</span></div>
+            <div class="metric-value">{value} <span style="color: {color}; font-weight: normal; ">{arrow}</span></div>
         </div>
         """, unsafe_allow_html=True)
     elif delta:
