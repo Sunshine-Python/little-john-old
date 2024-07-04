@@ -27,7 +27,7 @@ p, span, div {
 }
 
 .metric-container {
-    background-color: transparent;  /* Remove background color */
+    background-color: white;  /* Remove background color */
     border: none;  /* Remove border */
     padding: 10px;
     margin-bottom: 10px;
