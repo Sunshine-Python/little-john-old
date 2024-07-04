@@ -5,7 +5,12 @@ h1  {
     margin-top: -80px;  
 }
 
-h2, h3, h4, h5, h6 {
+h2  {
+    font-size: 18px;
+    color: #0d3d66 !important;  /* Dark Blue with !important */
+}
+
+h3, h4, h5, h6 {
     color: #0d3d66 !important;  /* Dark Blue with !important */
 }
 
