@@ -456,15 +456,15 @@ with st.sidebar:
     commission = st.slider('Commission (%)', min_value=0.0, max_value=0.05, value=0.002, step=0.001)
 
 
-# Function to shape metric containers
+# Function to set metric containers as divs
 def display_metric(label, value, delta=None, delta_color="normal", show_arrow=False):
     arrow_html = ""
     if show_arrow and delta is not None:
         delta_value = float(delta.replace('%', ''))
         if delta_value >= 0:
-            arrow_html = '<svg width="20" height="20" viewBox="0 0 24 24" fill="green"><path d="M12 2l9 18h-18z"/></svg>'  # Up arrow
+            arrow_html = '<span style="color: green;">&#x2191;</span>'  # Up arrow
         else:
-            arrow_html = '<svg width="20" height="20" viewBox="0 0 24 24" fill="red"><path d="M12 22l-9-18h18z"/></svg>'  # Down arrow
+            arrow_html = '<span style="color: red;">&#x2193;</span>'  # Down arrow
         st.markdown(f"""
         <div class="metric-container">
             <div class="metric-label">{label}</div>
@@ -486,7 +486,6 @@ def display_metric(label, value, delta=None, delta_color="normal", show_arrow=Fa
             <div class="metric-value">{value}</div>
         </div>
         """, unsafe_allow_html=True)
-
 
 
 
