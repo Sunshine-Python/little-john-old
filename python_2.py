@@ -457,26 +457,13 @@ with st.sidebar:
 
 
 # Function to set metric containers as divs
-def display_metric(label, value, delta=None, delta_color="normal", show_arrow=False):
-    arrow_html = ""
-    if show_arrow and delta is not None:
-        delta_value = float(delta.replace('%', ''))
-        if delta_value >= 0:
-            arrow_html = '<span style="color: green; font-size: 12px;">&#x2191;</span>'  # Up arrow
-        else:
-            arrow_html = '<span style="color: red; font-size: 12px;">&#x2193;</span>'  # Down arrow
-        st.markdown(f"""
-        <div class="metric-container">
-            <div class="metric-label">{label}</div>
-            <div class="metric-value">{value} {arrow_html}</div>
-        </div>
-        """, unsafe_allow_html=True)
-    elif delta:
+def display_metric(label, value, delta=None, delta_color="normal", arrow=None):
+    if arrow:
         st.markdown(f"""
         <div class="metric-container">
             <div class="metric-label">{label}</div>
             <div class="metric-value">{value}</div>
-            <div class="metric-delta" style="color: {'red' if delta_color == 'inverse' else 'green'};">{delta}</div>
+            <div class="metric-delta" style="color: {'red' if delta_color == 'inverse' else 'green'};">{arrow} {delta}</div>
         </div>
         """, unsafe_allow_html=True)
     else:
@@ -486,6 +473,7 @@ def display_metric(label, value, delta=None, delta_color="normal", show_arrow=Fa
             <div class="metric-value">{value}</div>
         </div>
         """, unsafe_allow_html=True)
+
 
 
 
@@ -540,6 +528,9 @@ if ticker_data is not None and not ticker_data.empty:
         selected_metrics = {k: metrics[k] for k in key_metrics if k in metrics}
         df_metrics = pd.DataFrame(selected_metrics, index=['Value']).T
 
+        
+
+
         col1, col2, col3, col4, col5 = st.columns(5)
 
         with col1:
@@ -552,7 +543,8 @@ if ticker_data is not None and not ticker_data.empty:
             strategy_return = df_metrics.loc['Return [%]', 'Value']
             bh_return = df_metrics.loc['Buy & Hold Return [%]', 'Value']
             outperformance = strategy_return - bh_return
-            display_metric("Strategy vs. Buy & Hold", f"{outperformance:.2f}%", delta=f"{outperformance:.2f}%", delta_color="inverse", show_arrow=True)
+            arrow = "↑" if outperformance > 0 else "↓"
+            display_metric("Strategy vs. Buy & Hold", f"{outperformance:.2f}%", delta=f"{outperformance:.2f}%", arrow=arrow, delta_color="inverse" if outperformance < 0 else "normal")
         with col5:
             display_metric("Win Rate", f"{df_metrics.loc['Win Rate [%]', 'Value']:.2f}%")
 
