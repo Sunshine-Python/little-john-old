@@ -355,10 +355,14 @@ def strategy_params_and_viz(strategy):
         mean_reversion_params()
     elif strategy == 'Momentum':
         momentum_params()
+    elif strategy == 'VWAP':
+        vwap_viz()
     elif strategy == 'Stochastic':
         stochastic_params()
     else:
         st.error(f"Strategy '{strategy}' not implemented.")
+
+
 
 def strategy_viz(strategy):
     if strategy == 'Buy and Hold':
