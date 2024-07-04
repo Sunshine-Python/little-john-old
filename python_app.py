@@ -7,13 +7,13 @@ import pandas as pd
 import numpy as np
 import ta
 import plotly.graph_objects as go
-from backtesting.lib import crossover
 
 st.set_page_config(layout="wide")
 
 # Include custom CSS
 with open("style.css") as css:
     st.markdown(f'<style>{css.read()}</style>', unsafe_allow_html=True)
+
 
 def fetch_data(ticker, start_date, end_date):
     """
@@ -24,6 +24,7 @@ def fetch_data(ticker, start_date, end_date):
     data.columns = ['Open', 'High', 'Low', 'Close', 'Volume']
     return data
 
+
 # Buy and Hold Strategy
 class BuyAndHoldStrategy(Strategy):
     def init(self):
@@ -33,12 +34,25 @@ class BuyAndHoldStrategy(Strategy):
         if not self.position:
             self.buy()
 
+
+def buy_and_hold_viz():
+    st.write("The Buy and Hold strategy simply buys the stock at the beginning of the period and holds it until the end. There are no parameters to adjust.")
+    
+    x = np.arange(100)
+    y = np.cumsum(np.random.randn(100)) + 100
+    fig = go.Figure(go.Scatter(x=x, y=y, mode='lines', name='Stock Price'))
+    fig.update_layout(title='Buy and Hold Visualization', xaxis_title='Time', yaxis_title='Price')
+    st.plotly_chart(fig)
+
+
 # SMA Cross Strategy
 class SmaCross(Strategy):
     n1 = 10
     n2 = 20
 
     def init(self):
+        self.n1 = st.session_state.get('sma_n1', self.n1)
+        self.n2 = st.session_state.get('sma_n2', self.n2)
         self.sma1 = self.I(SMA, self.data.Close, self.n1)
         self.sma2 = self.I(SMA, self.data.Close, self.n2)
 
@@ -48,6 +62,29 @@ class SmaCross(Strategy):
         elif crossover(self.sma2, self.sma1):
             self.sell()
 
+
+def sma_cross_params():
+    st.subheader('SMA Cross Parameters')
+    st.slider('Short Window (n1)', key='sma_n1', min_value=5, max_value=50, value=10)
+    st.slider('Long Window (n2)', key='sma_n2', min_value=20, max_value=100, value=20)
+
+
+def sma_cross_viz():
+    x = np.arange(100)
+    y = np.cumsum(np.random.randn(100)) + 100
+    n1 = st.session_state.get('sma_n1', 10)
+    n2 = st.session_state.get('sma_n2', 20)
+    short_sma = np.convolve(y, np.ones(n1), mode='valid') / n1
+    long_sma = np.convolve(y, np.ones(n2), mode='valid') / n2
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=x, y=y, mode='lines', name='Price'))
+    fig.add_trace(go.Scatter(x=x[n1-1:], y=short_sma, mode='lines', name=f'SMA({n1})'))
+    fig.add_trace(go.Scatter(x=x[n2-1:], y=long_sma, mode='lines', name=f'SMA({n2})'))
+    fig.update_layout(title='SMA Cross Visualization', xaxis_title='Time', yaxis_title='Price')
+    st.plotly_chart(fig)
+
+
 # RSI Strategy
 class RsiStrategy(Strategy):
     length = 14
@@ -55,13 +92,39 @@ class RsiStrategy(Strategy):
     oversold = 30
 
     def init(self):
-        self.rsi = self.I(ta.momentum.RSIIndicator(close=self.data.Close, window=self.length).rsi)
+        self.length = st.session_state.get('rsi_length', self.length)
+        self.overbought = st.session_state.get('rsi_overbought', self.overbought)
+        self.oversold = st.session_state.get('rsi_oversold', self.oversold)
+        close_prices = pd.Series(self.data.Close)
+        self.rsi = self.I(ta.momentum.RSIIndicator(close=close_prices, window=self.length).rsi)
 
     def next(self):
         if self.rsi[-1] < self.oversold:
             self.buy()
         elif self.rsi[-1] > self.overbought:
             self.sell()
+
+
+def rsi_params():
+    st.subheader('RSI Parameters')
+    st.slider('RSI Length', key='rsi_length', min_value=5, max_value=50, value=14)
+    st.slider('Overbought Level', key='rsi_overbought', min_value=70, max_value=90, value=70)
+    st.slider('Oversold Level', key='rsi_oversold', min_value=10, max_value=30, value=30)
+
+
+def rsi_viz():
+    x = np.arange(100)
+    y = np.cumsum(np.random.randn(100)) + 100
+    length = st.session_state.get('rsi_length', 14)
+    rsi = ta.momentum.RSIIndicator(pd.Series(y), window=length).rsi()
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=x, y=rsi, mode='lines', name='RSI'))
+    fig.add_shape(type="line", x0=0, y0=st.session_state.get('rsi_overbought', 70), x1=100, y1=st.session_state.get('rsi_overbought', 70), line=dict(color="red", width=2, dash="dash"))
+    fig.add_shape(type="line", x0=0, y0=st.session_state.get('rsi_oversold', 30), x1=100, y1=st.session_state.get('rsi_oversold', 30), line=dict(color="green", width=2, dash="dash"))
+    fig.update_layout(title='RSI Visualization', xaxis_title='Time', yaxis_title='RSI')
+    st.plotly_chart(fig)
+
 
 # MACD Strategy
 class MacdStrategy(Strategy):
@@ -70,10 +133,14 @@ class MacdStrategy(Strategy):
     signal = 9
 
     def init(self):
-        self.macd_indicator = ta.trend.MACD(self.data.Close, window_slow=self.slow, window_fast=self.fast, window_sign=self.signal)
-        self.macd_line = self.I(lambda: self.macd_indicator.macd())
-        self.signal_line = self.I(lambda: self.macd_indicator.macd_signal())
-        self.macd_diff = self.I(lambda: self.macd_indicator.macd_diff())
+        self.fast = st.session_state.get('macd_fast', self.fast)
+        self.slow = st.session_state.get('macd_slow', self.slow)
+        self.signal = st.session_state.get('macd_signal', self.signal)
+        close_series = pd.Series(self.data.Close)
+        self.macd_indicator = ta.trend.MACD(close_series, window_slow=self.slow, window_fast=self.fast, window_sign=self.signal)
+        self.macd_line = self.I(self.macd_indicator.macd)
+        self.signal_line = self.I(self.macd_indicator.macd_signal)
+        self.macd_diff = self.I(self.macd_indicator.macd_diff)
 
     def next(self):
         if crossover(self.macd_line, self.signal_line):
@@ -81,16 +148,43 @@ class MacdStrategy(Strategy):
         elif crossover(self.signal_line, self.macd_line):
             self.sell()
 
+
+def macd_params():
+    st.subheader('MACD Parameters')
+    st.slider('Fast Length', key='macd_fast', min_value=5, max_value=50, value=12)
+    st.slider('Slow Length', key='macd_slow', min_value=20, max_value=100, value=26)
+    st.slider('Signal Length', key='macd_signal', min_value=5, max_value=50, value=9)
+
+
+def macd_viz():
+    x = np.arange(100)
+    y = np.cumsum(np.random.randn(100)) + 100
+    fast = st.session_state.get('macd_fast', 12)
+    slow = st.session_state.get('macd_slow', 26)
+    signal = st.session_state.get('macd_signal', 9)
+    macd = ta.trend.MACD(pd.Series(y), window_slow=slow, window_fast=fast, window_sign=signal)
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=x, y=macd.macd(), mode='lines', name='MACD'))
+    fig.add_trace(go.Scatter(x=x, y=macd.macd_signal(), mode='lines', name='Signal'))
+    fig.add_bar(x=x, y=macd.macd_diff(), name='Histogram')
+    fig.update_layout(title='MACD Visualization', xaxis_title='Time', yaxis_title='Value')
+    st.plotly_chart(fig)
+
+
 # Bollinger Bands Strategy
 class BollingerBandsStrategy(Strategy):
     window = 20
     window_dev = 2
 
     def init(self):
-        indicator = ta.volatility.BollingerBands(self.data.Close, window=self.window, window_dev=self.window_dev)
-        self.upper = self.I(lambda: indicator.bollinger_hband())
-        self.mid = self.I(lambda: indicator.bollinger_mavg())
-        self.lower = self.I(lambda: indicator.bollinger_lband())
+        self.window = st.session_state.get('bb_length', self.window)
+        self.window_dev = st.session_state.get('bb_std_dev', self.window_dev)
+        close_series = pd.Series(self.data.Close)
+        self.bb_indicator = ta.volatility.BollingerBands(close=close_series, window=self.window, window_dev=self.window_dev)
+        self.upper = self.I(self.bb_indicator.bollinger_hband)
+        self.mid = self.I(self.bb_indicator.bollinger_mavg)
+        self.lower = self.I(self.bb_indicator.bollinger_lband)
 
     def next(self):
         if self.data.Close[-1] < self.lower[-1]:
@@ -98,12 +192,37 @@ class BollingerBandsStrategy(Strategy):
         elif self.data.Close[-1] > self.upper[-1]:
             self.sell()
 
+
+def bollinger_bands_params():
+    st.subheader('Bollinger Bands Parameters')
+    st.slider('Length', key='bb_length', min_value=5, max_value=50, value=20)
+    st.slider('Number of Standard Deviations', key='bb_std_dev', min_value=1, max_value=3, value=2)
+
+
+def bollinger_bands_viz():
+    x = np.arange(100)
+    y = np.cumsum(np.random.randn(100)) + 100
+    length = st.session_state.get('bb_length', 20)
+    std_dev = st.session_state.get('bb_std_dev', 2)
+    bb = ta.volatility.BollingerBands(pd.Series(y), window=length, window_dev=std_dev)
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=x, y=y, mode='lines', name='Price'))
+    fig.add_trace(go.Scatter(x=x, y=bb.bollinger_hband(), mode='lines', name='Upper Band'))
+    fig.add_trace(go.Scatter(x=x, y=bb.bollinger_mavg(), mode='lines', name='Middle Band'))
+    fig.add_trace(go.Scatter(x=x, y=bb.bollinger_lband(), mode='lines', name='Lower Band'))
+    fig.update_layout(title='Bollinger Bands Visualization', xaxis_title='Time', yaxis_title='Price')
+    st.plotly_chart(fig)
+
+
 # Mean Reversion Strategy
 class MeanReversionStrategy(Strategy):
     length = 30
     std_dev_multiplier = 2
 
     def init(self):
+        self.length = st.session_state.get('mean_rev_length', self.length)
+        self.std_dev_multiplier = st.session_state.get('std_dev_multiplier', self.std_dev_multiplier)
         self.sma = self.I(SMA, self.data.Close, self.length)
 
     def next(self):
@@ -112,12 +231,38 @@ class MeanReversionStrategy(Strategy):
         elif self.data.Close[-1] > self.sma[-1] + self.std_dev_multiplier * self.data.Close.std():
             self.sell()
 
+
+def mean_reversion_params():
+    st.subheader('Mean Reversion Parameters')
+    st.slider('SMA Length', key='mean_rev_length', min_value=10, max_value=100, value=30)
+    st.slider('Standard Deviation Multiplier', key='std_dev_multiplier', min_value=1, max_value=5, value=2)
+
+
+def mean_reversion_viz():
+    x = np.arange(100)
+    y = np.cumsum(np.random.randn(100)) + 100
+    length = st.session_state.get('mean_rev_length', 30)
+    std_dev = st.session_state.get('std_dev_multiplier', 2)
+    sma = np.convolve(y, np.ones(length), mode='valid') / length
+    std = np.std(y) * std_dev
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=x, y=y, mode='lines', name='Price'))
+    fig.add_trace(go.Scatter(x=x[length-1:], y=sma, mode='lines', name='SMA'))
+    fig.add_trace(go.Scatter(x=x[length-1:], y=sma+std, mode='lines', name='Upper Band'))
+    fig.add_trace(go.Scatter(x=x[length-1:], y=sma-std, mode='lines', name='Lower Band'))
+    fig.update_layout(title='Mean Reversion Visualization', xaxis_title='Time', yaxis_title='Price')
+    st.plotly_chart(fig)
+
+
 # Momentum Strategy
 class MomentumStrategy(Strategy):
     period = 90
 
     def init(self):
-        self.momentum = self.I(ta.momentum.ROCIndicator(self.data.Close, window=self.period).roc)
+        self.period = st.session_state.get('momentum_period', self.period)
+        close_series = pd.Series(self.data.Close)
+        self.momentum = self.I(ta.momentum.ROCIndicator(close=close_series, window=self.period).roc)
 
     def next(self):
         if self.momentum[-1] > 0:
@@ -125,12 +270,35 @@ class MomentumStrategy(Strategy):
         elif self.momentum[-1] < 0:
             self.sell()
 
+
+def momentum_params():
+    st.subheader('Momentum Parameters')
+    st.slider('Momentum Period', key='momentum_period', min_value=10, max_value=200, value=90)
+
+
+def momentum_viz():
+    x = np.arange(100)
+    y = np.cumsum(np.random.randn(100)) + 100
+    period = st.session_state.get('momentum_period', 90)
+    momentum = ta.momentum.ROCIndicator(pd.Series(y), window=period).roc()
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=x[period:], y=momentum[period:], mode='lines', name='Momentum'))
+    fig.add_shape(type="line", x0=period, y0=0, x1=100, y1=0, line=dict(color="red", width=2, dash="dash"))
+    fig.update_layout(title='Momentum Visualization', xaxis_title='Time', yaxis_title='Momentum')
+    st.plotly_chart(fig)
+
+
 # VWAP Strategy
 class VwapStrategy(Strategy):
     def init(self):
-        typical_price = (self.data.High + self.data.Low + self.data.Close) / 3
-        cum_vol_x_typical_price = (typical_price * self.data.Volume).cumsum()
-        cum_volume = self.data.Volume.cumsum()
+        high_series = pd.Series(self.data.High)
+        low_series = pd.Series(self.data.Low)
+        close_series = pd.Series(self.data.Close)
+        volume_series = pd.Series(self.data.Volume)
+        typical_price = (high_series + low_series + close_series) / 3
+        cum_vol_x_typical_price = (typical_price * volume_series).cumsum()
+        cum_volume = volume_series.cumsum()
         self.vwap = self.I(lambda: cum_vol_x_typical_price / cum_volume)
 
     def next(self):
@@ -139,6 +307,20 @@ class VwapStrategy(Strategy):
         elif self.data.Close[-1] > self.vwap[-1]:
             self.sell()
 
+
+def vwap_viz():
+    x = np.arange(100)
+    price = np.cumsum(np.random.randn(100)) + 100
+    volume = np.random.randint(1000, 10000, 100)
+    vwap = np.cumsum(price * volume) / np.cumsum(volume)
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=x, y=price, mode='lines', name='Price'))
+    fig.add_trace(go.Scatter(x=x, y=vwap, mode='lines', name='VWAP'))
+    fig.update_layout(title='VWAP Visualization', xaxis_title='Time', yaxis_title='Price')
+    st.plotly_chart(fig)
+
+
 # Stochastic Strategy
 class StochasticStrategy(Strategy):
     k_period = 14
@@ -146,7 +328,13 @@ class StochasticStrategy(Strategy):
     slowing = 3
 
     def init(self):
-        self.stoch_indicator = ta.momentum.StochasticOscillator(self.data.High, self.data.Low, self.data.Close, window=self.k_period, smooth_window=self.d_period)
+        self.k_period = st.session_state.get('stoch_k', self.k_period)
+        self.d_period = st.session_state.get('stoch_d', self.d_period)
+        self.slowing = st.session_state.get('stoch_slowing', self.slowing)
+        high_series = pd.Series(self.data.High)
+        low_series = pd.Series(self.data.Low)
+        close_series = pd.Series(self.data.Close)
+        self.stoch_indicator = ta.momentum.StochasticOscillator(high=high_series, low=low_series, close=close_series, window=self.k_period, smooth_window=self.d_period)
         self.k = self.I(self.stoch_indicator.stoch)
         self.d = self.I(self.stoch_indicator.stoch_signal)
 
@@ -156,148 +344,12 @@ class StochasticStrategy(Strategy):
         elif self.k[-1] > 80 and self.d[-1] > 80:
             self.sell()
 
-# Parameter input functions
-def sma_cross_params():
-    st.subheader('SMA Cross Parameters')
-    st.slider('Short Window (n1)', key='sma_n1', min_value=5, max_value=50, value=10)
-    st.slider('Long Window (n2)', key='sma_n2', min_value=20, max_value=100, value=20)
-
-def macd_params():
-    st.subheader('MACD Parameters')
-    st.slider('Fast Length', key='macd_fast', min_value=5, max_value=50, value=12)
-    st.slider('Slow Length', key='macd_slow', min_value=20, max_value=100, value=26)
-    st.slider('Signal Length', key='macd_signal', min_value=5, max_value=50, value=9)
-
-def rsi_params():
-    st.subheader('RSI Parameters')
-    st.slider('RSI Length', key='rsi_length', min_value=5, max_value=50, value=14)
-    st.slider('Overbought Level', key='rsi_overbought', min_value=70, max_value=90, value=70)
-    st.slider('Oversold Level', key='rsi_oversold', min_value=10, max_value=30, value=30)
-
-def bollinger_bands_params():
-    st.subheader('Bollinger Bands Parameters')
-    st.slider('Length', key='bb_length', min_value=5, max_value=50, value=20)
-    st.slider('Number of Standard Deviations', key='bb_std_dev', min_value=1, max_value=3, value=2)
-
-def mean_reversion_params():
-    st.subheader('Mean Reversion Parameters')
-    st.slider('SMA Length', key='mean_rev_length', min_value=10, max_value=100, value=30)
-    st.slider('Standard Deviation Multiplier', key='std_dev_multiplier', min_value=1, max_value=5, value=2)
-
-def momentum_params():
-    st.subheader('Momentum Parameters')
-    st.slider('Momentum Period', key='momentum_period', min_value=10, max_value=200, value=90)
 
 def stochastic_params():
     st.subheader('Stochastic Parameters')
     st.slider('Stochastic %K', key='stoch_k', min_value=5, max_value=30, value=14)
     st.slider('Stochastic %D', key='stoch_d', min_value=3, max_value=30, value=3)
 
-# Visualization functions
-def buy_and_hold_viz():
-    x = np.arange(100)
-    y = np.cumsum(np.random.randn(100)) + 100
-    fig = go.Figure(go.Scatter(x=x, y=y, mode='lines', name='Stock Price'))
-    fig.update_layout(title='Buy and Hold Visualization', xaxis_title='Time', yaxis_title='Price')
-    st.plotly_chart(fig)
-
-def sma_cross_viz():
-    x = np.arange(100)
-    y = np.cumsum(np.random.randn(100)) + 100
-    n1 = st.session_state.get('sma_n1', 10)
-    n2 = st.session_state.get('sma_n2', 20)
-    short_sma = np.convolve(y, np.ones(n1), mode='valid') / n1
-    long_sma = np.convolve(y, np.ones(n2), mode='valid') / n2
-    
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=x, y=y, mode='lines', name='Price'))
-    fig.add_trace(go.Scatter(x=x[n1-1:], y=short_sma, mode='lines', name=f'SMA({n1})'))
-    fig.add_trace(go.Scatter(x=x[n2-1:], y=long_sma, mode='lines', name=f'SMA({n2})'))
-    fig.update_layout(title='SMA Cross Visualization', xaxis_title='Time', yaxis_title='Price')
-    st.plotly_chart(fig)
-
-def macd_viz():
-    x = np.arange(100)
-    y = np.cumsum(np.random.randn(100)) + 100
-    fast = st.session_state.get('macd_fast', 12)
-    slow = st.session_state.get('macd_slow', 26)
-    signal = st.session_state.get('macd_signal', 9)
-    macd = ta.trend.MACD(pd.Series(y), window_slow=slow, window_fast=fast, window_sign=signal)
-    
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=x, y=macd.macd(), mode='lines', name='MACD'))
-    fig.add_trace(go.Scatter(x=x, y=macd.macd_signal(), mode='lines', name='Signal'))
-    fig.add_bar(x=x, y=macd.macd_diff(), name='Histogram')
-    fig.update_layout(title='MACD Visualization', xaxis_title='Time', yaxis_title='Value')
-    st.plotly_chart(fig)
-
-def rsi_viz():
-    x = np.arange(100)
-    y = np.cumsum(np.random.randn(100)) + 100
-    length = st.session_state.get('rsi_length', 14)
-    rsi = ta.momentum.RSIIndicator(pd.Series(y), window=length).rsi()
-    
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=x, y=rsi, mode='lines', name='RSI'))
-    fig.add_shape(type="line", x0=0, y0=st.session_state.get('rsi_overbought', 70), x1=100, y1=st.session_state.get('rsi_overbought', 70), line=dict(color="red", width=2, dash="dash"))
-    fig.add_shape(type="line", x0=0, y0=st.session_state.get('rsi_oversold', 30), x1=100, y1=st.session_state.get('rsi_oversold', 30), line=dict(color="green", width=2, dash="dash"))
-    fig.update_layout(title='RSI Visualization', xaxis_title='Time', yaxis_title='RSI')
-    st.plotly_chart(fig)
-
-def bollinger_bands_viz():
-    x = np.arange(100)
-    y = np.cumsum(np.random.randn(100)) + 100
-    length = st.session_state.get('bb_length', 20)
-    std_dev = st.session_state.get('bb_std_dev', 2)
-    bb = ta.volatility.BollingerBands(pd.Series(y), window=length, window_dev=std_dev)
-    
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=x, y=y, mode='lines', name='Price'))
-    fig.add_trace(go.Scatter(x=x, y=bb.bollinger_hband(), mode='lines', name='Upper Band'))
-    fig.add_trace(go.Scatter(x=x, y=bb.bollinger_mavg(), mode='lines', name='Middle Band'))
-    fig.add_trace(go.Scatter(x=x, y=bb.bollinger_lband(), mode='lines', name='Lower Band'))
-    fig.update_layout(title='Bollinger Bands Visualization', xaxis_title='Time', yaxis_title='Price')
-    st.plotly_chart(fig)
-
-def mean_reversion_viz():
-    x = np.arange(100)
-    y = np.cumsum(np.random.randn(100)) + 100
-    length = st.session_state.get('mean_rev_length', 30)
-    std_dev = st.session_state.get('std_dev_multiplier', 2)
-    sma = np.convolve(y, np.ones(length), mode='valid') / length
-    std = np.std(y) * std_dev
-    
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=x, y=y, mode='lines', name='Price'))
-    fig.add_trace(go.Scatter(x=x[length-1:], y=sma, mode='lines', name='SMA'))
-    fig.add_trace(go.Scatter(x=x[length-1:], y=sma+std, mode='lines', name='Upper Band'))
-    fig.add_trace(go.Scatter(x=x[length-1:], y=sma-std, mode='lines', name='Lower Band'))
-    fig.update_layout(title='Mean Reversion Visualization', xaxis_title='Time', yaxis_title='Price')
-    st.plotly_chart(fig)
-
-def momentum_viz():
-    x = np.arange(100)
-    y = np.cumsum(np.random.randn(100)) + 100
-    period = st.session_state.get('momentum_period', 90)
-    momentum = ta.momentum.ROCIndicator(pd.Series(y), window=period).roc()
-    
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=x[period:], y=momentum[period:], mode='lines', name='Momentum'))
-    fig.add_shape(type="line", x0=period, y0=0, x1=100, y1=0, line=dict(color="red", width=2, dash="dash"))
-    fig.update_layout(title='Momentum Visualization', xaxis_title='Time', yaxis_title='Momentum')
-    st.plotly_chart(fig)
-
-def vwap_viz():
-    x = np.arange(100)
-    price = np.cumsum(np.random.randn(100)) + 100
-    volume = np.random.randint(1000, 10000, 100)
-    vwap = np.cumsum(price * volume) / np.cumsum(volume)
-    
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=x, y=price, mode='lines', name='Price'))
-    fig.add_trace(go.Scatter(x=x, y=vwap, mode='lines', name='VWAP'))
-    fig.update_layout(title='VWAP Visualization', xaxis_title='Time', yaxis_title='Price')
-    st.plotly_chart(fig)
 
 def stochastic_viz():
     x = np.arange(100)
@@ -307,7 +359,7 @@ def stochastic_viz():
     k = st.session_state.get('stoch_k', 14)
     d = st.session_state.get('stoch_d', 3)
     stoch = ta.momentum.StochasticOscillator(pd.Series(high), pd.Series(low), pd.Series(close), window=k, smooth_window=d)
-    
+
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=x, y=stoch.stoch(), mode='lines', name='%K'))
     fig.add_trace(go.Scatter(x=x, y=stoch.stoch_signal(), mode='lines', name='%D'))
@@ -316,21 +368,29 @@ def stochastic_viz():
     fig.update_layout(title='Stochastic Oscillator Visualization', xaxis_title='Time', yaxis_title='Value')
     st.plotly_chart(fig)
 
+
 def strategy_params_and_viz(strategy):
-    if strategy == 'SMA Cross':
+    if strategy == 'Buy and Hold':
+        buy_and_hold_viz()
+    elif strategy == 'SMA Cross':
         sma_cross_params()
-    elif strategy == 'MACD':
-        macd_params()
     elif strategy == 'RSI':
         rsi_params()
+    elif strategy == 'MACD':
+        macd_params()
     elif strategy == 'Bollinger Bands':
         bollinger_bands_params()
     elif strategy == 'Mean Reversion':
         mean_reversion_params()
     elif strategy == 'Momentum':
         momentum_params()
+    elif strategy == 'VWAP':
+        pass  # No parameters for VWAP
     elif strategy == 'Stochastic':
         stochastic_params()
+    else:
+        st.error(f"Strategy '{strategy}' not implemented.")
+
 
 def strategy_viz(strategy):
     if strategy == 'Buy and Hold':
@@ -351,6 +411,9 @@ def strategy_viz(strategy):
         vwap_viz()
     elif strategy == 'Stochastic':
         stochastic_viz()
+    else:
+        st.error(f"Strategy '{strategy}' not implemented.")
+
 
 def strategy_description(strategy):
     descriptions = {
@@ -365,6 +428,7 @@ def strategy_description(strategy):
         'Stochastic': "The Stochastic Oscillator strategy uses overbought and oversold levels to generate trading signals."
     }
     st.write(descriptions.get(strategy, "No explanation available for this strategy."))
+
 
 # Custom CSS to improve the app's appearance
 st.markdown("""
@@ -382,6 +446,7 @@ h1, h2, h3 {
 """, unsafe_allow_html=True)
 
 st.title('Advanced Stock Trading Strategy Backtester')
+
 
 # Sidebar for user inputs
 logo_url = "little-john-logo.png"
@@ -404,6 +469,7 @@ with st.sidebar:
     st.header('💰 Backtest Settings')
     cash = st.number_input('Starting Cash', min_value=1000, max_value=100000, value=10000)
     commission = st.slider('Commission (%)', min_value=0.0, max_value=0.05, value=0.002, step=0.001)
+
 
 # Main content area
 ticker_data = fetch_data(ticker, start_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d'))
@@ -506,6 +572,11 @@ if ticker_data is not None and not ticker_data.empty:
             st.dataframe(df_metrics, use_container_width=True)
     except KeyError:
         st.error(f"Strategy '{strategy_option}' not implemented. Please select another strategy.")
+    except Exception as e:
+        st.error(f"An error occurred: {str(e)}")
+else:
+    st.error("No data found for the selected ticker and date range.")
+
 
 # Add an explanation of the selected strategy
 st.markdown("---")
