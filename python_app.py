@@ -14,7 +14,6 @@ st.set_page_config(layout="wide")
 with open("style.css") as css:
     st.markdown(f'<style>{css.read()}</style>', unsafe_allow_html=True)
 
-
 def fetch_data(ticker, start_date, end_date):
     """
     Fetches historical stock data from Yahoo Finance.
@@ -23,7 +22,6 @@ def fetch_data(ticker, start_date, end_date):
     data = data.drop(columns=['Adj Close'])
     data.columns = ['Open', 'High', 'Low', 'Close', 'Volume']
     return data
-
 
 # Buy and Hold Strategy
 class BuyAndHoldStrategy(Strategy):
@@ -34,16 +32,12 @@ class BuyAndHoldStrategy(Strategy):
         if not self.position:
             self.buy()
 
-
-
 def buy_and_hold_viz():
     x = np.arange(100)
     y = np.cumsum(np.random.randn(100)) + 100
     fig = go.Figure(go.Scatter(x=x, y=y, mode='lines', name='Stock Price'))
     fig.update_layout(title='Buy and Hold Visualization', xaxis_title='Time', yaxis_title='Price')
     st.plotly_chart(fig)
-
-
 
 # SMA Cross Strategy
 class SmaCross(Strategy):
@@ -62,12 +56,10 @@ class SmaCross(Strategy):
         elif crossover(self.sma2, self.sma1):
             self.sell()
 
-
 def sma_cross_params():
     st.subheader('SMA Cross Parameters')
     st.slider('Short Window (n1)', key='sma_n1', min_value=5, max_value=50, value=10)
     st.slider('Long Window (n2)', key='sma_n2', min_value=20, max_value=100, value=20)
-
 
 def sma_cross_viz():
     x = np.arange(100)
@@ -83,7 +75,6 @@ def sma_cross_viz():
     fig.add_trace(go.Scatter(x=x[n2-1:], y=long_sma, mode='lines', name=f'SMA({n2})'))
     fig.update_layout(title='SMA Cross Visualization', xaxis_title='Time', yaxis_title='Price')
     st.plotly_chart(fig)
-
 
 # RSI Strategy
 class RsiStrategy(Strategy):
@@ -104,13 +95,11 @@ class RsiStrategy(Strategy):
         elif self.rsi[-1] > self.overbought:
             self.sell()
 
-
 def rsi_params():
     st.subheader('RSI Parameters')
     st.slider('RSI Length', key='rsi_length', min_value=5, max_value=50, value=14)
     st.slider('Overbought Level', key='rsi_overbought', min_value=70, max_value=90, value=70)
     st.slider('Oversold Level', key='rsi_oversold', min_value=10, max_value=30, value=30)
-
 
 def rsi_viz():
     x = np.arange(100)
@@ -124,7 +113,6 @@ def rsi_viz():
     fig.add_shape(type="line", x0=0, y0=st.session_state.get('rsi_oversold', 30), x1=100, y1=st.session_state.get('rsi_oversold', 30), line=dict(color="green", width=2, dash="dash"))
     fig.update_layout(title='RSI Visualization', xaxis_title='Time', yaxis_title='RSI')
     st.plotly_chart(fig)
-
 
 # MACD Strategy
 class MacdStrategy(Strategy):
@@ -148,13 +136,11 @@ class MacdStrategy(Strategy):
         elif crossover(self.signal_line, self.macd_line):
             self.sell()
 
-
 def macd_params():
     st.subheader('MACD Parameters')
     st.slider('Fast Length', key='macd_fast', min_value=5, max_value=50, value=12)
     st.slider('Slow Length', key='macd_slow', min_value=20, max_value=100, value=26)
     st.slider('Signal Length', key='macd_signal', min_value=5, max_value=50, value=9)
-
 
 def macd_viz():
     x = np.arange(100)
@@ -170,7 +156,6 @@ def macd_viz():
     fig.add_bar(x=x, y=macd.macd_diff(), name='Histogram')
     fig.update_layout(title='MACD Visualization', xaxis_title='Time', yaxis_title='Value')
     st.plotly_chart(fig)
-
 
 # Bollinger Bands Strategy
 class BollingerBandsStrategy(Strategy):
@@ -192,12 +177,10 @@ class BollingerBandsStrategy(Strategy):
         elif self.data.Close[-1] > self.upper[-1]:
             self.sell()
 
-
 def bollinger_bands_params():
     st.subheader('Bollinger Bands Parameters')
     st.slider('Length', key='bb_length', min_value=5, max_value=50, value=20)
     st.slider('Number of Standard Deviations', key='bb_std_dev', min_value=1, max_value=3, value=2)
-
 
 def bollinger_bands_viz():
     x = np.arange(100)
@@ -213,7 +196,6 @@ def bollinger_bands_viz():
     fig.add_trace(go.Scatter(x=x, y=bb.bollinger_lband(), mode='lines', name='Lower Band'))
     fig.update_layout(title='Bollinger Bands Visualization', xaxis_title='Time', yaxis_title='Price')
     st.plotly_chart(fig)
-
 
 # Mean Reversion Strategy
 class MeanReversionStrategy(Strategy):
@@ -231,12 +213,10 @@ class MeanReversionStrategy(Strategy):
         elif self.data.Close[-1] > self.sma[-1] + self.std_dev_multiplier * self.data.Close.std():
             self.sell()
 
-
 def mean_reversion_params():
     st.subheader('Mean Reversion Parameters')
     st.slider('SMA Length', key='mean_rev_length', min_value=10, max_value=100, value=30)
     st.slider('Standard Deviation Multiplier', key='std_dev_multiplier', min_value=1, max_value=5, value=2)
-
 
 def mean_reversion_viz():
     x = np.arange(100)
@@ -254,7 +234,6 @@ def mean_reversion_viz():
     fig.update_layout(title='Mean Reversion Visualization', xaxis_title='Time', yaxis_title='Price')
     st.plotly_chart(fig)
 
-
 # Momentum Strategy
 class MomentumStrategy(Strategy):
     period = 90
@@ -270,11 +249,9 @@ class MomentumStrategy(Strategy):
         elif self.momentum[-1] < 0:
             self.sell()
 
-
 def momentum_params():
     st.subheader('Momentum Parameters')
     st.slider('Momentum Period', key='momentum_period', min_value=10, max_value=200, value=90)
-
 
 def momentum_viz():
     x = np.arange(100)
@@ -287,7 +264,6 @@ def momentum_viz():
     fig.add_shape(type="line", x0=period, y0=0, x1=100, y1=0, line=dict(color="red", width=2, dash="dash"))
     fig.update_layout(title='Momentum Visualization', xaxis_title='Time', yaxis_title='Momentum')
     st.plotly_chart(fig)
-
 
 # VWAP Strategy
 class VwapStrategy(Strategy):
@@ -307,7 +283,6 @@ class VwapStrategy(Strategy):
         elif self.data.Close[-1] > self.vwap[-1]:
             self.sell()
 
-
 def vwap_viz():
     x = np.arange(100)
     price = np.cumsum(np.random.randn(100)) + 100
@@ -319,7 +294,6 @@ def vwap_viz():
     fig.add_trace(go.Scatter(x=x, y=vwap, mode='lines', name='VWAP'))
     fig.update_layout(title='VWAP Visualization', xaxis_title='Time', yaxis_title='Price')
     st.plotly_chart(fig)
-
 
 # Stochastic Strategy
 class StochasticStrategy(Strategy):
@@ -344,12 +318,10 @@ class StochasticStrategy(Strategy):
         elif self.k[-1] > 80 and self.d[-1] > 80:
             self.sell()
 
-
 def stochastic_params():
     st.subheader('Stochastic Parameters')
     st.slider('Stochastic %K', key='stoch_k', min_value=5, max_value=30, value=14)
     st.slider('Stochastic %D', key='stoch_d', min_value=3, max_value=30, value=3)
-
 
 def stochastic_viz():
     x = np.arange(100)
@@ -368,30 +340,25 @@ def stochastic_viz():
     fig.update_layout(title='Stochastic Oscillator Visualization', xaxis_title='Time', yaxis_title='Value')
     st.plotly_chart(fig)
 
-
 def strategy_params_and_viz(strategy):
     if strategy == 'Buy and Hold':
         pass  # No parameters for Buy and Hold
     elif strategy == 'SMA Cross':
-        sma_cross_viz()
+        sma_cross_params()
     elif strategy == 'RSI':
-        rsi_viz()
+        rsi_params()
     elif strategy == 'MACD':
-        macd_viz()
+        macd_params()
     elif strategy == 'Bollinger Bands':
-        bollinger_bands_viz()
+        bollinger_bands_params()
     elif strategy == 'Mean Reversion':
-        mean_reversion_viz()
+        mean_reversion_params()
     elif strategy == 'Momentum':
-        momentum_viz()
-    elif strategy == 'VWAP':
-        vwap_viz()
+        momentum_params()
     elif strategy == 'Stochastic':
-        stochastic_viz()
+        stochastic_params()
     else:
         st.error(f"Strategy '{strategy}' not implemented.")
-
-
 
 def strategy_viz(strategy):
     if strategy == 'Buy and Hold':
@@ -415,7 +382,6 @@ def strategy_viz(strategy):
     else:
         st.error(f"Strategy '{strategy}' not implemented.")
 
-
 def strategy_description(strategy):
     descriptions = {
         'Buy and Hold': "This strategy simply buys the stock at the beginning and holds it until the end of the period.",
@@ -429,7 +395,6 @@ def strategy_description(strategy):
         'Stochastic': "The Stochastic Oscillator strategy uses overbought and oversold levels to generate trading signals."
     }
     st.write(descriptions.get(strategy, "No explanation available for this strategy."))
-
 
 # Custom CSS to improve the app's appearance
 st.markdown("""
@@ -447,7 +412,6 @@ h1, h2, h3 {
 """, unsafe_allow_html=True)
 
 st.title('Advanced Stock Trading Strategy Backtester')
-
 
 # Sidebar for user inputs
 logo_url = "little-john-logo.png"
@@ -470,7 +434,6 @@ with st.sidebar:
     st.header('💰 Backtest Settings')
     cash = st.number_input('Starting Cash', min_value=1000, max_value=100000, value=10000)
     commission = st.slider('Commission (%)', min_value=0.0, max_value=0.05, value=0.002, step=0.001)
-
 
 # Main content area
 ticker_data = fetch_data(ticker, start_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d'))
@@ -577,7 +540,6 @@ if ticker_data is not None and not ticker_data.empty:
         st.error(f"An error occurred: {str(e)}")
 else:
     st.error("No data found for the selected ticker and date range.")
-
 
 # Add an explanation of the selected strategy
 st.markdown("---")
