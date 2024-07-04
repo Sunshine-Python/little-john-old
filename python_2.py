@@ -462,9 +462,9 @@ def display_metric(label, value, delta=None, delta_color="normal", show_arrow=Fa
     if show_arrow and delta is not None:
         delta_value = float(delta.replace('%', ''))
         if delta_value >= 0:
-            arrow_html = '<span style="color: green;">&#x2191;</span>'  # Up arrow
+            arrow_html = '<span style="color: green; font-size: 12px;">&#x2191;</span>'  # Up arrow
         else:
-            arrow_html = '<span style="color: red;">&#x2193;</span>'  # Down arrow
+            arrow_html = '<span style="color: red; font-size: 12px;">&#x2193;</span>'  # Down arrow
         st.markdown(f"""
         <div class="metric-container">
             <div class="metric-label">{label}</div>
@@ -486,6 +486,8 @@ def display_metric(label, value, delta=None, delta_color="normal", show_arrow=Fa
             <div class="metric-value">{value}</div>
         </div>
         """, unsafe_allow_html=True)
+
+
 
 
 
