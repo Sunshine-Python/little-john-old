@@ -54,7 +54,10 @@ def buy_and_hold_viz():
     fig = go.Figure(go.Scatter(x=x, y=y, mode='lines', name='Stock Price'))
     fig.update_layout(title='Buy and Hold Visualization', xaxis_title='Time', yaxis_title='Price', height=300, plot_bgcolor='white',
         paper_bgcolor='white')
+
+    st.markdown('<div class="rounded-box">', unsafe_allow_html=True)
     st.plotly_chart(fig)
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # SMA Cross Strategy
 class SmaCross(Strategy):
