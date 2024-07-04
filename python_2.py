@@ -73,7 +73,6 @@ class SmaCross(Strategy):
             self.sell()
 
 def sma_cross_params():
-    # st.subheader('SMA Cross Parameters')
     st.slider('Short Window (n1)', key='sma_n1', min_value=5, max_value=50, value=10)
     st.slider('Long Window (n2)', key='sma_n2', min_value=20, max_value=100, value=20)
 
