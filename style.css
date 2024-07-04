@@ -34,7 +34,7 @@ p, span, div {
     text-align: center;
     width: 180px;  /* Fixed width */
     display: inline-block;  /* Ensure proper alignment */
-    border-radius: 20px;  /* Add rounded edges */
+    border-radius: 15px;  /* Add rounded edges */
 }
 .metric-label {
     font-size: 12px;  /* Smaller font size */
