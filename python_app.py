@@ -476,7 +476,7 @@ if ticker_data is not None and not ticker_data.empty:
         with row1_col3:
             st.subheader('Equity Curve')
             fig_equity = go.Figure(data=[go.Scatter(x=output['_equity_curve'].index, y=output['_equity_curve']['Equity'], mode='lines')])
-            fig_equity.update_layout(title=f'{ticker} Equity Curve', xaxis_title='Date', yaxis_title='Equity', height=400)
+            fig_equity.update_layout(title=f'{ticker} Equity Curve', xaxis_title='Date', yaxis_title='Equity', height=350)
             st.plotly_chart(fig_equity, use_container_width=True)
 
         # Second row: Performance Metrics next to Trade Log
