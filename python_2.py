@@ -458,19 +458,17 @@ with st.sidebar:
 
 # Function to shape metric containers
 def display_metric(label, value, delta=None, delta_color="normal", show_arrow=False):
-    arrow = ""
+    arrow_html = ""
     if show_arrow and delta is not None:
         delta_value = float(delta.replace('%', ''))
         if delta_value >= 0:
-            arrow = "&#9650;"  # Up arrow
-            color = "green"
+            arrow_html = '<svg width="20" height="20" viewBox="0 0 24 24" fill="green"><path d="M12 2l9 18h-18z"/></svg>'  # Up arrow
         else:
-            arrow = "&#9660;"  # Down arrow
-            color = "red"
+            arrow_html = '<svg width="20" height="20" viewBox="0 0 24 24" fill="red"><path d="M12 22l-9-18h18z"/></svg>'  # Down arrow
         st.markdown(f"""
         <div class="metric-container">
             <div class="metric-label">{label}</div>
-            <div class="metric-value">{value} <span style="color: {color};">{arrow}</span></div>
+            <div class="metric-value">{value} {arrow_html}</div>
         </div>
         """, unsafe_allow_html=True)
     elif delta:
@@ -488,6 +486,7 @@ def display_metric(label, value, delta=None, delta_color="normal", show_arrow=Fa
             <div class="metric-value">{value}</div>
         </div>
         """, unsafe_allow_html=True)
+
 
 
 
