@@ -458,6 +458,26 @@ with st.sidebar:
 # Main content area
 ticker_data = fetch_data(ticker, start_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d'))
 
+
+# Wrap each metric in a div with the "metric-container" class
+def display_metric(label, value, delta=None, delta_color="normal"):
+    if delta:
+        st.markdown(f"""
+        <div class="metric-container">
+            <div class="metric-label">{label}</div>
+            <div class="metric-value">{value}</div>
+            <div class="metric-delta" style="color: {'red' if delta_color == 'inverse' else 'green'};">{delta}</div>
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown(f"""
+        <div class="metric-container">
+            <div class="metric-label">{label}</div>
+            <div class="metric-value">{value}</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+
 if ticker_data is not None and not ticker_data.empty:
     # Map strategy names to classes
     strategy_map = {
@@ -505,18 +525,19 @@ if ticker_data is not None and not ticker_data.empty:
         col1, col2, col3, col4, col5 = st.columns(5)
 
         with col1:
-            st.metric("Total Return", f"{df_metrics.loc['Return [%]', 'Value']:.2f}%")
+            display_metric("Total Return", f"{df_metrics.loc['Return [%]', 'Value']:.2f}%")
         with col2:
-            st.metric("Sharpe Ratio", f"{df_metrics.loc['Sharpe Ratio', 'Value']:.2f}")
+            display_metric("Sharpe Ratio", f"{df_metrics.loc['Sharpe Ratio', 'Value']:.2f}")
         with col3:
-            st.metric("Max Drawdown", f"{df_metrics.loc['Max. Drawdown [%]', 'Value']:.2f}%")
+            display_metric("Max Drawdown", f"{df_metrics.loc['Max. Drawdown [%]', 'Value']:.2f}%")
         with col4:
             strategy_return = df_metrics.loc['Return [%]', 'Value']
             bh_return = df_metrics.loc['Buy & Hold Return [%]', 'Value']
             outperformance = strategy_return - bh_return
-            st.metric("Strategy vs. Buy & Hold", f"{outperformance:.2f}%", delta=f"{outperformance:.2f}%", delta_color="normal")
+            display_metric("Strategy vs. Buy & Hold", f"{outperformance:.2f}%", delta=f"{outperformance:.2f}%", delta_color="inverse")
         with col5:
-            st.metric("Win Rate", f"{df_metrics.loc['Win Rate [%]', 'Value']:.2f}%")
+            display_metric("Win Rate", f"{df_metrics.loc['Win Rate [%]', 'Value']:.2f}%")
+
 
         # Third row: equity curve, comparison graph & strategy performance radar
         row3_col1, row3_col2, row3_col3 = st.columns([1, 1, 1])
