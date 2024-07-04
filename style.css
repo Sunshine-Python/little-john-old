@@ -18,10 +18,9 @@ h2, h4, h5 {
     font-family: serif !important;
 }
 
-/* h6 {
-    color: #0d3d66 !important;  /* Dark Blue with !important */
-font-family: serif !important;
-} */
+h6 {
+    font-family: serif !important;
+}
 
 p, span, div {
     color: #000000 !important;  /* Black with !important */
