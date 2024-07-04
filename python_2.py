@@ -588,6 +588,7 @@ strategy_explanations = {
 }
 st.write(strategy_explanations.get(strategy_option, "No explanation available for this strategy."))
 
+
 # Add a footer with a disclaimer
 st.markdown("---")
 st.caption("Disclaimer: This tool is for educational purposes only. Always do your own research before making investment decisions.")
