@@ -462,7 +462,7 @@ if ticker_data is not None and not ticker_data.empty:
         output = bt.run()
 
         # First row: Strategy Parameters and Visualization next to Equity Curve
-        row1_col1, row1_col2, row1_col3 = st.columns([2, 2, 1.5])
+        row1_col1, row1_col2, row1_col3 = st.columns([1.5, 2.5, 1.5])
 
         with row1_col1:
             st.subheader("Strategy Parameters")
