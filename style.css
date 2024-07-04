@@ -19,27 +19,11 @@ p, span, div {
     font-family: serif !important;  /* Serif Font with !important */
 }
 
-.metric-container {
-    background-color: #ffffff;
-    border: 1px solid #e6e6e6;
-    border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 10px;
-    text-align: center;
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-}
-.metric-label {
-    font-size: 18px;
-    font-weight: bold;
-    color: #333333;
-}
-.metric-value {
-    font-size: 24px;
-    font-weight: bold;
-    color: #000000;
-}
-.metric-delta {
-    font-size: 14px;
-    color: #888888;
+/* Rounded edges on graph containers */
+.rounded-box {
+    border-radius: 8px;  /* Adjust this value to change the rounded edges */
+    overflow: hidden;  /* Ensure content respects the border radius */
+    background-color: white;  /* Ensure the background is white */
+    padding: 10px;  /* Add padding if needed */
 }
 
