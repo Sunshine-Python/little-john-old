@@ -14,6 +14,16 @@ st.set_page_config(layout="wide")
 with open("style.css") as css:
     st.markdown(f'<style>{css.read()}</style>', unsafe_allow_html=True)
 
+# Custom CSS to reduce spacing
+st.markdown("""
+<style>
+.css-18e3th9 {
+    padding: 2px 0px 2px 0px;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
 def fetch_data(ticker, start_date, end_date):
     """
     Fetches historical stock data from Yahoo Finance.
