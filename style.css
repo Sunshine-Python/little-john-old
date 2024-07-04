@@ -27,13 +27,11 @@ p, span, div {
 }
 
 .metric-container {
-    background-color: #ffffff;
-    border: 1px solid #e6e6e6;
-    border-radius: 5px;
+    background-color: transparent;  /* Remove background color */
+    border: none;  /* Remove border */
     padding: 10px;
     margin-bottom: 10px;
     text-align: center;
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
     width: 180px;  /* Fixed width */
     display: inline-block;  /* Ensure proper alignment */
 }
