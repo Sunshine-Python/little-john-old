@@ -456,6 +456,76 @@ with st.sidebar:
 # Main content area
 ticker_data = fetch_data(ticker, start_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d'))
 
+# Custom CSS to reduce spacing and style metrics
+st.markdown("""
+<style>
+.css-18e3th9 {
+    padding: 2px 0px 2px 0px;
+}
+.metric-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+.metric-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 150px;
+    height: 100px;
+    background-color: #ffffff;
+    border: 1px solid #e6e6e6;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+}
+.metric-title {
+    font-size: 14px;
+    color: #666666;
+}
+.metric-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333333;
+}
+.metric-delta {
+    font-size: 12px;
+    color: #888888;
+}
+</style>
+""", unsafe_allow_html=True)
+
+def display_metrics(metrics):
+    st.markdown('<div class="metric-container">', unsafe_allow_html=True)
+
+    for metric in metrics:
+        st.markdown(f"""
+        <div class="metric-box">
+            <div class="metric-title">{metric['title']}</div>
+            <div class="metric-value">{metric['value']}</div>
+            <div class="metric-delta">{metric['delta']}</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
+def calculate_metrics(df_metrics):
+    strategy_return = df_metrics.loc['Return [%]', 'Value']
+    bh_return = df_metrics.loc['Buy & Hold Return [%]', 'Value']
+    outperformance = strategy_return - bh_return
+
+    metrics = [
+        {"title": "Total Return", "value": f"{df_metrics.loc['Return [%]', 'Value']:.2f}%", "delta": ""},
+        {"title": "Sharpe Ratio", "value": f"{df_metrics.loc['Sharpe Ratio', 'Value']:.2f}", "delta": ""},
+        {"title": "Max Drawdown", "value": f"{df_metrics.loc['Max. Drawdown [%]', 'Value']:.2f}%", "delta": ""},
+        {"title": "Strategy vs. Buy & Hold", "value": f"{outperformance:.2f}%", "delta": ""},
+        {"title": "Win Rate", "value": f"{df_metrics.loc['Win Rate [%]', 'Value']:.2f}%", "delta": ""}
+    ]
+
+    return metrics
+
+
 if ticker_data is not None and not ticker_data.empty:
     # Map strategy names to classes
     strategy_map = {
@@ -490,31 +560,19 @@ if ticker_data is not None and not ticker_data.empty:
         # Second row: Performance Metrics
         st.subheader('Performance Metrics')
         key_metrics = ['Start', 'End', 'Duration', 'Exposure Time [%]', 'Equity Final [$]', 'Equity Peak [$]', 
-                        'Return [%]', 'Buy & Hold Return [%]', 'Return (Ann.) [%]', 'Volatility (Ann.) [%]', 
-                        'Sharpe Ratio', 'Sortino Ratio', 'Calmar Ratio', 'Max. Drawdown [%]', 'Avg. Drawdown [%]', 
-                        'Max. Drawdown Duration', 'Avg. Drawdown Duration', 'Trades', 'Win Rate [%]', 
-                        'Best Trade [%]', 'Worst Trade [%]', 'Avg. Trade [%]', 'Max. Trade Duration', 
-                        'Avg. Trade Duration', 'Profit Factor', 'Expectancy [%]']
+                'Return [%]', 'Buy & Hold Return [%]', 'Return (Ann.) [%]', 'Volatility (Ann.) [%]', 
+                'Sharpe Ratio', 'Sortino Ratio', 'Calmar Ratio', 'Max. Drawdown [%]', 'Avg. Drawdown [%]', 
+                'Max. Drawdown Duration', 'Avg. Drawdown Duration', 'Trades', 'Win Rate [%]', 
+                'Best Trade [%]', 'Worst Trade [%]', 'Avg. Trade [%]', 'Max. Trade Duration', 
+                'Avg. Trade Duration', 'Profit Factor', 'Expectancy [%]']
 
         metrics = output.drop(['_strategy', '_equity_curve', '_trades'])
         selected_metrics = {k: metrics[k] for k in key_metrics if k in metrics}
         df_metrics = pd.DataFrame(selected_metrics, index=['Value']).T
 
-        col1, col2, col3, col4, col5 = st.columns(5)
+        metrics_to_display = calculate_metrics(df_metrics)
+        display_metrics(metrics_to_display)
 
-        with col1:
-            st.metric("Total Return", f"{df_metrics.loc['Return [%]', 'Value']:.2f}%")
-        with col2:
-            st.metric("Sharpe Ratio", f"{df_metrics.loc['Sharpe Ratio', 'Value']:.2f}")
-        with col3:
-            st.metric("Max Drawdown", f"{df_metrics.loc['Max. Drawdown [%]', 'Value']:.2f}%")
-        with col4:
-            strategy_return = df_metrics.loc['Return [%]', 'Value']
-            bh_return = df_metrics.loc['Buy & Hold Return [%]', 'Value']
-            outperformance = strategy_return - bh_return
-            st.metric("Strategy vs. Buy & Hold", f"{outperformance:.2f}%", delta=f"{outperformance:.2f}%", delta_color="normal")
-        with col5:
-            st.metric("Win Rate", f"{df_metrics.loc['Win Rate [%]', 'Value']:.2f}%")
 
         # Third row: equity curve, comparison graph & strategy performance radar
         row3_col1, row3_col2, row3_col3 = st.columns([1, 1, 1])
