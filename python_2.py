@@ -462,10 +462,10 @@ def display_metric(label, value, delta=None, delta_color="normal", show_arrow=Fa
     if show_arrow and delta is not None:
         delta_value = float(delta.replace('%', ''))
         if delta_value >= 0:
-            arrow = "&#9650;"  # Up arrow
+            arrow = "&#8593;"  # Up arrow
             color = "green"
         else:
-            arrow = "&#9660;"  # Down arrow
+            arrow = "&#8595;"  # Down arrow
             color = "red"
         st.markdown(f"""
         <div class="metric-container">
