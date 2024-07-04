@@ -35,14 +35,14 @@ class BuyAndHoldStrategy(Strategy):
             self.buy()
 
 
+
 def buy_and_hold_viz():
-    st.write("The Buy and Hold strategy simply buys the stock at the beginning of the period and holds it until the end. There are no parameters to adjust.")
-    
     x = np.arange(100)
     y = np.cumsum(np.random.randn(100)) + 100
     fig = go.Figure(go.Scatter(x=x, y=y, mode='lines', name='Stock Price'))
     fig.update_layout(title='Buy and Hold Visualization', xaxis_title='Time', yaxis_title='Price')
     st.plotly_chart(fig)
+
 
 
 # SMA Cross Strategy
@@ -371,25 +371,26 @@ def stochastic_viz():
 
 def strategy_params_and_viz(strategy):
     if strategy == 'Buy and Hold':
-        buy_and_hold_viz()
+        pass  # No parameters for Buy and Hold
     elif strategy == 'SMA Cross':
-        sma_cross_params()
+        sma_cross_viz()
     elif strategy == 'RSI':
-        rsi_params()
+        rsi_viz()
     elif strategy == 'MACD':
-        macd_params()
+        macd_viz()
     elif strategy == 'Bollinger Bands':
-        bollinger_bands_params()
+        bollinger_bands_viz()
     elif strategy == 'Mean Reversion':
-        mean_reversion_params()
+        mean_reversion_viz()
     elif strategy == 'Momentum':
-        momentum_params()
+        momentum_viz()
     elif strategy == 'VWAP':
-        pass  # No parameters for VWAP
+        vwap_viz()
     elif strategy == 'Stochastic':
-        stochastic_params()
+        stochastic_viz()
     else:
         st.error(f"Strategy '{strategy}' not implemented.")
+
 
 
 def strategy_viz(strategy):
