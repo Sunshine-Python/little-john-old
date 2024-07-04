@@ -460,7 +460,7 @@ if ticker_data is not None and not ticker_data.empty:
         'Stochastic': StochasticStrategy
     }
 
-try:
+    try:
         selected_strategy = strategy_map[strategy_option]
         bt = Backtest(ticker_data, selected_strategy, cash=cash, commission=commission)
         output = bt.run()
@@ -552,7 +552,6 @@ try:
         st.error(f"An error occurred: {str(e)}")
 else:
     st.error("No data found for the selected ticker and date range.")
-
 
 # Add an explanation of the selected strategy
 st.markdown("---")
