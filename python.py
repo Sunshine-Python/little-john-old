@@ -487,27 +487,34 @@ if ticker_data is not None and not ticker_data.empty:
             st.plotly_chart(fig_equity, use_container_width=True)
 
         with row2_col2:
-            st.subheader('Performance Metrics')
-            key_metrics = ['Start', 'End', 'Duration', 'Exposure Time [%]', 'Equity Final [$]', 'Equity Peak [$]', 
-                            'Return [%]', 'Buy & Hold Return [%]', 'Return (Ann.) [%]', 'Volatility (Ann.) [%]', 
-                            'Sharpe Ratio', 'Sortino Ratio', 'Calmar Ratio', 'Max. Drawdown [%]', 'Avg. Drawdown [%]', 
-                            'Max. Drawdown Duration', 'Avg. Drawdown Duration', 'Trades', 'Win Rate [%]', 
-                            'Best Trade [%]', 'Worst Trade [%]', 'Avg. Trade [%]', 'Max. Trade Duration', 
-                            'Avg. Trade Duration', 'Profit Factor', 'Expectancy [%]']
+    st.subheader('Performance Metrics')
+    key_metrics = ['Start', 'End', 'Duration', 'Exposure Time [%]', 'Equity Final [$]', 'Equity Peak [$]', 
+                    'Return [%]', 'Buy & Hold Return [%]', 'Return (Ann.) [%]', 'Volatility (Ann.) [%]', 
+                    'Sharpe Ratio', 'Sortino Ratio', 'Calmar Ratio', 'Max. Drawdown [%]', 'Avg. Drawdown [%]', 
+                    'Max. Drawdown Duration', 'Avg. Drawdown Duration', 'Trades', 'Win Rate [%]', 
+                    'Best Trade [%]', 'Worst Trade [%]', 'Avg. Trade [%]', 'Max. Trade Duration', 
+                    'Avg. Trade Duration', 'Profit Factor', 'Expectancy [%]']
 
-            metrics = output.drop(['_strategy', '_equity_curve', '_trades'])
-            selected_metrics = {k: metrics[k] for k in key_metrics if k in metrics}
-            df_metrics = pd.DataFrame(selected_metrics, index=['Value']).T
+    metrics = output.drop(['_strategy', '_equity_curve', '_trades'])
+    selected_metrics = {k: metrics[k] for k in key_metrics if k in metrics}
+    df_metrics = pd.DataFrame(selected_metrics, index=['Value']).T
 
-            # Display key performance indicators
-            st.metric("Total Return", f"{df_metrics.loc['Return [%]', 'Value']:.2f}%")
-            st.metric("Sharpe Ratio", f"{df_metrics.loc['Sharpe Ratio', 'Value']:.2f}")
-            st.metric("Max Drawdown", f"{df_metrics.loc['Max. Drawdown [%]', 'Value']:.2f}%")
-            strategy_return = df_metrics.loc['Return [%]', 'Value']
-            bh_return = df_metrics.loc['Buy & Hold Return [%]', 'Value']
-            outperformance = strategy_return - bh_return
-            st.metric("Strategy vs. Buy & Hold", f"{outperformance:.2f}%", delta=f"{outperformance:.2f}%", delta_color="normal")
-            st.metric("Win Rate", f"{df_metrics.loc['Win Rate [%]', 'Value']:.2f}%")
+    # Display key performance indicators
+    col2_1, col2_2, col2_3 = st.columns(3)
+    with col2_1:
+        st.metric("Total Return", f"{df_metrics.loc['Return [%]', 'Value']:.2f}%")
+    with col2_2:
+        st.metric("Sharpe Ratio", f"{df_metrics.loc['Sharpe Ratio', 'Value']:.2f}")
+    with col2_3:
+        st.metric("Max Drawdown", f"{df_metrics.loc['Max. Drawdown [%]', 'Value']:.2f}%")
+
+    col2_4, col2_5 = st.columns(2)
+    with col2_4:
+        st.metric("Win Rate", f"{df_metrics.loc['Win Rate [%]', 'Value']:.2f}%")
+    with col2_5:
+        st.metric("Profit Factor", f"{df_metrics.loc['Profit Factor', 'Value']:.2f}")
+
+
 
         with row2_col3:
             st.subheader('Comparison Graph')
