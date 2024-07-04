@@ -466,18 +466,18 @@ if ticker_data is not None and not ticker_data.empty:
         output = bt.run()
 
         # First row: Strategy Parameters and Visualization
-        row1_col1, row1_col2 = st.columns([1, 1])
+row1_col1, row1_col2 = st.columns([1, 1])
 
-        with row1_col1:
-            st.subheader("Strategy Parameters")
-            strategy_description(strategy_option)
-            strategy_params_and_viz(strategy_option)
+with row1_col1:
+    st.subheader("Strategy Parameters")
+    strategy_description(strategy_option)
+    strategy_params_and_viz(strategy_option)
 
-        with row1_col2:
-            st.subheader("Visualization")
-            strategy_viz(strategy_option)
+with row1_col2:
+    st.subheader("Visualization")
+    strategy_viz(strategy_option)
 
-        # Second row: equity curve, comparison graph & performance metrics
+# Second row: equity curve, comparison graph & performance metrics
 row2_col1, row2_col2, row2_col3 = st.columns([2, 1, 1])
 
 with row2_col1:
@@ -522,6 +522,7 @@ with row2_col3:
     ])
     fig_return_comparison.update_layout(title='Strategy vs. Buy & Hold Return Comparison')
     st.plotly_chart(fig_return_comparison, use_container_width=True)
+
 
 
         # Third row: strategy performance radar
