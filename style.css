@@ -8,6 +8,7 @@ h1  {
 h3  {
     font-size: 20px;
     color: #0d3d66 !important;  /* Dark Blue with !important */
+    padding-left: 5px;
 }
 
 h2, h4, h5, h6 {
