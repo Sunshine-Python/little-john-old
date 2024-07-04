@@ -345,26 +345,41 @@ def strategy_params_and_viz(strategy):
         pass  # No parameters for Buy and Hold
     elif strategy == 'SMA Cross':
         sma_cross_params()
-        sma_cross_viz()
     elif strategy == 'RSI':
         rsi_params()
-        rsi_viz()
     elif strategy == 'MACD':
         macd_params()
-        macd_viz()
     elif strategy == 'Bollinger Bands':
         bollinger_bands_params()
-        bollinger_bands_viz()
     elif strategy == 'Mean Reversion':
         mean_reversion_params()
-        mean_reversion_viz()
     elif strategy == 'Momentum':
         momentum_params()
+    elif strategy == 'VWAP':
+        pass  # No parameters for VWAP
+    elif strategy == 'Stochastic':
+        stochastic_params()
+    else:
+        st.error(f"Strategy '{strategy}' not implemented.")
+
+def strategy_viz(strategy):
+    if strategy == 'Buy and Hold':
+        buy_and_hold_viz()
+    elif strategy == 'SMA Cross':
+        sma_cross_viz()
+    elif strategy == 'RSI':
+        rsi_viz()
+    elif strategy == 'MACD':
+        macd_viz()
+    elif strategy == 'Bollinger Bands':
+        bollinger_bands_viz()
+    elif strategy == 'Mean Reversion':
+        mean_reversion_viz()
+    elif strategy == 'Momentum':
         momentum_viz()
     elif strategy == 'VWAP':
         vwap_viz()
     elif strategy == 'Stochastic':
-        stochastic_params()
         stochastic_viz()
     else:
         st.error(f"Strategy '{strategy}' not implemented.")
@@ -444,87 +459,91 @@ if ticker_data is not None and not ticker_data.empty:
         bt = Backtest(ticker_data, selected_strategy, cash=cash, commission=commission)
         output = bt.run()
 
-        # First row: Strategy Parameters and Visualization
-        row1_col1, row1_col2 = st.columns([1, 2])
-        
-        with row1_col1:
-            st.subheader("Strategy Parameters")
-            strategy_description(strategy_option)
-            strategy_params_and_viz(strategy_option)
+       # First row: Strategy Parameters and Visualization
+row1_col1, row1_col2 = st.columns([1, 1])
 
-        with row1_col2:
-            st.subheader("Visualization")
-            strategy_viz(strategy_option)
+with row1_col1:
+    st.subheader("Strategy Parameters")
+    strategy_description(strategy_option)
+    strategy_params_and_viz(strategy_option)
 
-        # Second row: Equity Curve, Comparison Graph, and Performance Metrics
-        row2_col1, row2_col2, row2_col3 = st.columns([1, 1, 1])
+with row1_col2:
+    st.subheader("Visualization")
+    strategy_viz(strategy_option)
 
-        with row2_col1:
-            st.subheader('Equity Curve')
-            fig_equity = go.Figure(data=[go.Scatter(x=output['_equity_curve'].index, y=output['_equity_curve']['Equity'], mode='lines')])
-            fig_equity.update_layout(title=f'{ticker} Equity Curve', xaxis_title='Date', yaxis_title='Equity', height=300)
-            st.plotly_chart(fig_equity, use_container_width=True)
+# Second row: equity curve, comparison graph & performance metrics
+row2_col1, row2_col2, row2_col3 = st.columns([2, 1, 1])
 
-        with row2_col2:
-            st.subheader('Performance Metrics')
-            key_metrics = ['Start', 'End', 'Duration', 'Exposure Time [%]', 'Equity Final [$]', 'Equity Peak [$]', 
-                            'Return [%]', 'Buy & Hold Return [%]', 'Return (Ann.) [%]', 'Volatility (Ann.) [%]', 
-                            'Sharpe Ratio', 'Sortino Ratio', 'Calmar Ratio', 'Max. Drawdown [%]', 'Avg. Drawdown [%]', 
-                            'Max. Drawdown Duration', 'Avg. Drawdown Duration', 'Trades', 'Win Rate [%]', 
-                            'Best Trade [%]', 'Worst Trade [%]', 'Avg. Trade [%]', 'Max. Trade Duration', 
-                            'Avg. Trade Duration', 'Profit Factor', 'Expectancy [%]']
+with row2_col1:
+    st.subheader('Equity Curve')
+    fig_equity = go.Figure(data=[go.Scatter(x=output['_equity_curve'].index, y=output['_equity_curve']['Equity'], mode='lines')])
+    fig_equity.update_layout(title=f'{ticker} Equity Curve', xaxis_title='Date', yaxis_title='Equity', height=350)
+    st.plotly_chart(fig_equity, use_container_width=True)
 
-            metrics = output.drop(['_strategy', '_equity_curve', '_trades'])
-            selected_metrics = {k: metrics[k] for k in key_metrics if k in metrics}
-            df_metrics = pd.DataFrame(selected_metrics, index=['Value']).T
+with row2_col2:
+    st.subheader('Performance Metrics')
+    key_metrics = ['Start', 'End', 'Duration', 'Exposure Time [%]', 'Equity Final [$]', 'Equity Peak [$]', 
+                    'Return [%]', 'Buy & Hold Return [%]', 'Return (Ann.) [%]', 'Volatility (Ann.) [%]', 
+                    'Sharpe Ratio', 'Sortino Ratio', 'Calmar Ratio', 'Max. Drawdown [%]', 'Avg. Drawdown [%]', 
+                    'Max. Drawdown Duration', 'Avg. Drawdown Duration', 'Trades', 'Win Rate [%]', 
+                    'Best Trade [%]', 'Worst Trade [%]', 'Avg. Trade [%]', 'Max. Trade Duration', 
+                    'Avg. Trade Duration', 'Profit Factor', 'Expectancy [%]']
 
-            # Display key performance indicators
-            st.metric("Total Return", f"{df_metrics.loc['Return [%]', 'Value']:.2f}%")
-            st.metric("Sharpe Ratio", f"{df_metrics.loc['Sharpe Ratio', 'Value']:.2f}")
-            st.metric("Max Drawdown", f"{df_metrics.loc['Max. Drawdown [%]', 'Value']:.2f}%")
-            strategy_return = df_metrics.loc['Return [%]', 'Value']
-            bh_return = df_metrics.loc['Buy & Hold Return [%]', 'Value']
-            outperformance = strategy_return - bh_return
-            st.metric("Strategy vs. Buy & Hold", f"{outperformance:.2f}%", delta=f"{outperformance:.2f}%", delta_color="normal")
-            st.metric("Win Rate", f"{df_metrics.loc['Win Rate [%]', 'Value']:.2f}%")
+    metrics = output.drop(['_strategy', '_equity_curve', '_trades'])
+    selected_metrics = {k: metrics[k] for k in key_metrics if k in metrics}
+    df_metrics = pd.DataFrame(selected_metrics, index=['Value']).T
 
-        with row2_col3:
-            st.subheader('Comparison Graph')
-            fig_return_comparison = go.Figure(data=[
-                go.Bar(name='Strategy', x=['Return'], y=[strategy_return]),
-                go.Bar(name='Buy & Hold', x=['Return'], y=[bh_return])
-            ])
-            fig_return_comparison.update_layout(title='Strategy vs. Buy & Hold Return Comparison', height=300)
-            st.plotly_chart(fig_return_comparison, use_container_width=True)
+    # Display key performance indicators
+    st.metric("Total Return", f"{df_metrics.loc['Return [%]', 'Value']:.2f}%")
+    st.metric("Sharpe Ratio", f"{df_metrics.loc['Sharpe Ratio', 'Value']:.2f}")
+    st.metric("Max Drawdown", f"{df_metrics.loc['Max. Drawdown [%]', 'Value']:.2f}%")
+    strategy_return = df_metrics.loc['Return [%]', 'Value']
+    bh_return = df_metrics.loc['Buy & Hold Return [%]', 'Value']
+    outperformance = strategy_return - bh_return
+    st.metric("Strategy vs. Buy & Hold", f"{outperformance:.2f}%", delta=f"{outperformance:.2f}%", delta_color="normal")
+    st.metric("Win Rate", f"{df_metrics.loc['Win Rate [%]', 'Value']:.2f}%")
 
-        # Third row: Strategy Performance Radar
-        st.subheader('Strategy Performance Radar')
-        radar_metrics = ['Return [%]', 'Sharpe Ratio', 'Sortino Ratio', 'Calmar Ratio', 'Win Rate [%]']
-        radar_values = [df_metrics.loc[metric, 'Value'] for metric in radar_metrics]
+with row2_col3:
+    st.subheader('Comparison Graph')
+    fig_return_comparison = go.Figure(data=[
+        go.Bar(name='Strategy', x=['Return'], y=[strategy_return]),
+        go.Bar(name='Buy & Hold', x=['Return'], y=[bh_return])
+    ])
+    fig_return_comparison.update_layout(title='Strategy vs. Buy & Hold Return Comparison')
+    st.plotly_chart(fig_return_comparison, use_container_width=True)
 
-        fig_radar = go.Figure(data=go.Scatterpolar(
-            r=radar_values,
-            theta=radar_metrics,
-            fill='toself'
-        ))
-        fig_radar.update_layout(
-            polar=dict(
-                radialaxis=dict(visible=True, range=[0, max(radar_values)])
-            ),
-            showlegend=False,
-            height=300,
-            title='Strategy Performance Radar'
-        )
-        st.plotly_chart(fig_radar, use_container_width=True)
+# Third row: strategy performance radar
+st.subheader('Strategy Performance Radar')
+radar_metrics = ['Return [%]', 'Sharpe Ratio', 'Sortino Ratio', 'Calmar Ratio', 'Win Rate [%]']
+radar_values = [df_metrics.loc[metric, 'Value'] for metric in radar_metrics]
 
-        # Fourth row: Trade Log as pop-up
-        with st.expander("Trade Log"):
-            st.dataframe(output['_trades'], use_container_width=True)
+fig_radar = go.Figure(data=go.Scatterpolar(
+    r=radar_values,
+    theta=radar_metrics,
+    fill='toself'
+))
+fig_radar.update_layout(
+    polar=dict(
+        radialaxis=dict(visible=True, range=[0, max(radar_values)])
+    ),
+    showlegend=False,
+    height=350,
+    title='Strategy Performance Radar'
+)
+st.plotly_chart(fig_radar, use_container_width=True)
+
+# Fourth row: trade log as pop-up (same optic as "view all metrics")
+with st.expander("View Trade Log"):
+    st.dataframe(output['_trades'], use_container_width=True, height=300)
+
+# Display all metrics in an expandable section
+with st.expander("View All Metrics"):
+    st.dataframe(df_metrics, use_container_width=True)
+
 
         # Display all metrics in an expandable section
         with st.expander("View All Metrics"):
             st.dataframe(df_metrics, use_container_width=True)
-
     except KeyError:
         st.error(f"Strategy '{strategy_option}' not implemented. Please select another strategy.")
     except Exception as e:
@@ -532,7 +551,22 @@ if ticker_data is not None and not ticker_data.empty:
 else:
     st.error("No data found for the selected ticker and date range.")
 
+# Add an explanation of the selected strategy
+st.markdown("---")
+st.subheader("📚 Strategy Explanation")
+strategy_explanations = {
+    'Buy and Hold': "This strategy simply buys the stock at the beginning and holds it until the end of the period.",
+    'SMA Cross': "This strategy uses two Simple Moving Averages (SMA) and generates buy/sell signals when they cross.",
+    'RSI': "The Relative Strength Index (RSI) strategy buys when the RSI is oversold and sells when it's overbought.",
+    'MACD': "The Moving Average Convergence Divergence (MACD) strategy generates signals based on the crossover of the MACD line and the signal line.",
+    'Bollinger Bands': "This strategy uses Bollinger Bands to identify overbought and oversold conditions.",
+    'Mean Reversion': "The Mean Reversion strategy assumes that prices and other indicators tend to move back towards their average over time.",
+    'Momentum': "The Momentum strategy is based on the idea that trends in stock prices tend to continue for some time.",
+    'VWAP': "The Volume Weighted Average Price (VWAP) strategy uses the VWAP as a benchmark for trading decisions.",
+    'Stochastic': "The Stochastic Oscillator strategy uses overbought and oversold levels to generate trading signals."
+}
+st.write(strategy_explanations.get(strategy_option, "No explanation available for this strategy."))
+
 # Add a footer with a disclaimer
 st.markdown("---")
 st.caption("Disclaimer: This tool is for educational purposes only. Always do your own research before making investment decisions.")
-
