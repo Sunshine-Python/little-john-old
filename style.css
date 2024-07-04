@@ -56,7 +56,7 @@ p, span, div {
 
 /* New CSS for rounded edges on graph containers */
 .rounded-box {
-    border-radius: 8px;  /* Adjust this value to change the rounded edges */
+    border-radius: 20px;  /* Adjust this value to change the rounded edges */
     overflow: hidden;  /* Ensure content respects the border radius */
     background-color: white;  /* Ensure the background is white */
     padding: 10px;  /* Add padding if needed */
