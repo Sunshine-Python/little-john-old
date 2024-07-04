@@ -191,7 +191,6 @@ class BollingerBandsStrategy(Strategy):
             self.sell()
 
 def bollinger_bands_params():
-    st.subheader('Bollinger Bands Parameters')
     st.slider('Length', key='bb_length', min_value=5, max_value=50, value=20)
     st.slider('Number of Standard Deviations', key='bb_std_dev', min_value=1, max_value=3, value=2)
 
@@ -227,7 +226,6 @@ class MeanReversionStrategy(Strategy):
             self.sell()
 
 def mean_reversion_params():
-    st.subheader('Mean Reversion Parameters')
     st.slider('SMA Length', key='mean_rev_length', min_value=10, max_value=100, value=30)
     st.slider('Standard Deviation Multiplier', key='std_dev_multiplier', min_value=1, max_value=5, value=2)
 
@@ -263,7 +261,6 @@ class MomentumStrategy(Strategy):
             self.sell()
 
 def momentum_params():
-    st.subheader('Momentum Parameters')
     st.slider('Momentum Period', key='momentum_period', min_value=10, max_value=200, value=90)
 
 def momentum_viz():
@@ -332,7 +329,6 @@ class StochasticStrategy(Strategy):
             self.sell()
 
 def stochastic_params():
-    st.subheader('Stochastic Parameters')
     st.slider('Stochastic %K', key='stoch_k', min_value=5, max_value=30, value=14)
     st.slider('Stochastic %D', key='stoch_d', min_value=3, max_value=30, value=3)
 
