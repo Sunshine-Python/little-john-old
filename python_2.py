@@ -111,7 +111,6 @@ class RsiStrategy(Strategy):
             self.sell()
 
 def rsi_params():
-    st.subheader('RSI Parameters')
     st.slider('RSI Length', key='rsi_length', min_value=5, max_value=50, value=14)
     st.slider('Overbought Level', key='rsi_overbought', min_value=70, max_value=90, value=70)
     st.slider('Oversold Level', key='rsi_oversold', min_value=10, max_value=30, value=30)
@@ -152,7 +151,6 @@ class MacdStrategy(Strategy):
             self.sell()
 
 def macd_params():
-    st.subheader('MACD Parameters')
     st.slider('Fast Length', key='macd_fast', min_value=5, max_value=50, value=12)
     st.slider('Slow Length', key='macd_slow', min_value=20, max_value=100, value=26)
     st.slider('Signal Length', key='macd_signal', min_value=5, max_value=50, value=9)
