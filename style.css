@@ -3,20 +3,24 @@
 h1  {
     color: #000000 !important;  /* Black with !important */
     margin-top: -80px;  
+    font-family: serif !important;
 }
 
 h3  {
     font-size: 20px;
     color: #0d3d66 !important;  /* Dark Blue with !important */
     padding-left: 5px;
+    font-family: serif !important;
 }
 
 h2, h4, h5 {
     color: #0d3d66 !important;  /* Dark Blue with !important */
+    font-family: serif !important;
 }
 
 /* h6 {
     color: #0d3d66 !important;  /* Dark Blue with !important */
+font-family: serif !important;
 } */
 
 p, span, div {
@@ -24,40 +28,5 @@ p, span, div {
     font-family: serif !important;  /* Serif Font with !important */
 }
 
-.metric-container {
-    background-color: #ffffff;
-    border: 1px solid #e6e6e6;
-    border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 10px;
-    text-align: center;
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-}
-.metric-label {
-    font-size: 18px;
-    font-weight: bold;
-    color: #333333;
-}
-.metric-value {
-    font-size: 24px;
-    font-weight: bold;
-    color: #000000;
-}
-.metric-delta {
-    font-size: 14px;
-    color: #888888;
-}
 
-.section-container {
-    margin-bottom: 2rem;  /* Add space between sections */
-}
-
-/* New CSS for rounded edges on graph containers */
-.rounded-box {
-    border-radius: 8px;  /* Adjust this value to change the rounded edges */
-    overflow: hidden;  /* Ensure content respects the border radius */
-    background-color: white;  /* Ensure the background is white */
-    padding: 10px;  /* Add padding if needed */
-    margin-bottom: 20px;  /* Add margin if needed */
-}
 
