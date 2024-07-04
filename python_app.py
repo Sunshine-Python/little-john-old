@@ -340,7 +340,6 @@ def stochastic_viz():
     fig.update_layout(title='Stochastic Oscillator Visualization', xaxis_title='Time', yaxis_title='Value', height=300)
     st.plotly_chart(fig)
 
-
 def strategy_params_and_viz(strategy):
     if strategy == 'Buy and Hold':
         pass  # No parameters for Buy and Hold
@@ -362,7 +361,6 @@ def strategy_params_and_viz(strategy):
         stochastic_params()
     else:
         st.error(f"Strategy '{strategy}' not implemented.")
-
 
 def strategy_viz(strategy):
     if strategy == 'Buy and Hold':
@@ -461,8 +459,8 @@ if ticker_data is not None and not ticker_data.empty:
         bt = Backtest(ticker_data, selected_strategy, cash=cash, commission=commission)
         output = bt.run()
 
-        # First row: Strategy Parameters and Visualization next to Equity Curve
-        row1_col1, row1_col2, row1_col3 = st.columns([1.5, 2.5, 1.5])
+        # First row: Strategy Parameters and Visualization
+        row1_col1, row1_col2 = st.columns([1, 1])
 
         with row1_col1:
             st.subheader("Strategy Parameters")
@@ -473,16 +471,16 @@ if ticker_data is not None and not ticker_data.empty:
             st.subheader("Visualization")
             strategy_viz(strategy_option)
 
-        with row1_col3:
+        # Second row: equity curve, comparison graph & performance metrics
+        row2_col1, row2_col2, row2_col3 = st.columns([2, 1, 1])
+
+        with row2_col1:
             st.subheader('Equity Curve')
             fig_equity = go.Figure(data=[go.Scatter(x=output['_equity_curve'].index, y=output['_equity_curve']['Equity'], mode='lines')])
             fig_equity.update_layout(title=f'{ticker} Equity Curve', xaxis_title='Date', yaxis_title='Equity', height=350)
             st.plotly_chart(fig_equity, use_container_width=True)
 
-        # Second row: Performance Metrics next to Trade Log
-        row2_col1, row2_col2 = st.columns(2)
-
-        with row2_col1:
+        with row2_col2:
             st.subheader('Performance Metrics')
             key_metrics = ['Start', 'End', 'Duration', 'Exposure Time [%]', 'Equity Final [$]', 'Equity Peak [$]', 
                             'Return [%]', 'Buy & Hold Return [%]', 'Return (Ann.) [%]', 'Volatility (Ann.) [%]', 
@@ -505,19 +503,17 @@ if ticker_data is not None and not ticker_data.empty:
             st.metric("Strategy vs. Buy & Hold", f"{outperformance:.2f}%", delta=f"{outperformance:.2f}%", delta_color="normal")
             st.metric("Win Rate", f"{df_metrics.loc['Win Rate [%]', 'Value']:.2f}%")
 
-        with row2_col2:
-            st.subheader('Trade Log')
-            st.dataframe(output['_trades'], use_container_width=True, height=300)
+        with row2_col3:
+            st.subheader('Comparison Graph')
+            fig_return_comparison = go.Figure(data=[
+                go.Bar(name='Strategy', x=['Return'], y=[strategy_return]),
+                go.Bar(name='Buy & Hold', x=['Return'], y=[bh_return])
+            ])
+            fig_return_comparison.update_layout(title='Strategy vs. Buy & Hold Return Comparison')
+            st.plotly_chart(fig_return_comparison, use_container_width=True)
 
-        # Bar chart for return comparison
-        fig_return_comparison = go.Figure(data=[
-            go.Bar(name='Strategy', x=['Return'], y=[strategy_return]),
-            go.Bar(name='Buy & Hold', x=['Return'], y=[bh_return])
-        ])
-        fig_return_comparison.update_layout(title='Strategy vs. Buy & Hold Return Comparison')
-        st.plotly_chart(fig_return_comparison, use_container_width=True)
-
-        # Radar chart for key metrics
+        # Third row: strategy performance radar
+        st.subheader('Strategy Performance Radar')
         radar_metrics = ['Return [%]', 'Sharpe Ratio', 'Sortino Ratio', 'Calmar Ratio', 'Win Rate [%]']
         radar_values = [df_metrics.loc[metric, 'Value'] for metric in radar_metrics]
 
@@ -531,9 +527,14 @@ if ticker_data is not None and not ticker_data.empty:
                 radialaxis=dict(visible=True, range=[0, max(radar_values)])
             ),
             showlegend=False,
+            height=350,
             title='Strategy Performance Radar'
         )
         st.plotly_chart(fig_radar, use_container_width=True)
+
+        # Fourth row: trade log as pop-up (same optic as "view all metrics")
+        with st.expander("View Trade Log"):
+            st.dataframe(output['_trades'], use_container_width=True, height=300)
 
         # Display all metrics in an expandable section
         with st.expander("View All Metrics"):
