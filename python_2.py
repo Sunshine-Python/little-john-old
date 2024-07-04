@@ -456,12 +456,11 @@ with st.sidebar:
     commission = st.slider('Commission (%)', min_value=0.0, max_value=0.05, value=0.002, step=0.001)
 
 
-
-# Function to display metrics with custom CSS and optional arrow for delta
+# Function to shape metric containers
 def display_metric(label, value, delta=None, delta_color="normal", show_arrow=False):
     arrow = ""
     if show_arrow and delta is not None:
-        delta_value = float(delta)
+        delta_value = float(delta.replace('%', ''))
         if delta_value >= 0:
             arrow = "&#9650;"  # Up arrow
             color = "green"
@@ -489,6 +488,7 @@ def display_metric(label, value, delta=None, delta_color="normal", show_arrow=Fa
             <div class="metric-value">{value}</div>
         </div>
         """, unsafe_allow_html=True)
+
 
 
 
