@@ -23,7 +23,6 @@ h6 {
 }
 
 p, span, div {
-    color: #000000 !important;  /* Black with !important */
     font-family: serif !important;  /* Serif Font with !important */
 }
 
