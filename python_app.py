@@ -340,6 +340,7 @@ def stochastic_viz():
     fig.update_layout(title='Stochastic Oscillator Visualization', xaxis_title='Time', yaxis_title='Value')
     st.plotly_chart(fig)
 
+
 def strategy_params_and_viz(strategy):
     if strategy == 'Buy and Hold':
         pass  # No parameters for Buy and Hold
@@ -356,12 +357,11 @@ def strategy_params_and_viz(strategy):
     elif strategy == 'Momentum':
         momentum_params()
     elif strategy == 'VWAP':
-        vwap_viz()
+        pass  # No parameters for VWAP
     elif strategy == 'Stochastic':
         stochastic_params()
     else:
         st.error(f"Strategy '{strategy}' not implemented.")
-
 
 
 def strategy_viz(strategy):
