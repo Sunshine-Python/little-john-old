@@ -457,13 +457,28 @@ with st.sidebar:
 
 
 # Function to set metric containers as divs
-def display_metric(label, value, delta=None, delta_color="normal", arrow=None):
-    if arrow:
+def display_metric(label, value, delta=None, delta_color="normal", show_arrow=False):
+    arrow = ""
+    if show_arrow and delta is not None:
+        delta_value = float(delta.replace('%', ''))
+        if delta_value >= 0:
+            arrow = "&#9650;"  # Up arrow
+            color = "green"
+        else:
+            arrow = "&#9660;"  # Down arrow
+            color = "red"
+        st.markdown(f"""
+        <div class="metric-container">
+            <div class="metric-label">{label}</div>
+            <div class="metric-value">{value} <span style="color: {color};">{arrow}</span></div>
+        </div>
+        """, unsafe_allow_html=True)
+    elif delta:
         st.markdown(f"""
         <div class="metric-container">
             <div class="metric-label">{label}</div>
             <div class="metric-value">{value}</div>
-            <div class="metric-delta" style="color: {'red' if delta_color == 'inverse' else 'green'};">{arrow} {delta}</div>
+            <div class="metric-delta" style="color: {'red' if delta_color == 'inverse' else 'green'};">{delta}</div>
         </div>
         """, unsafe_allow_html=True)
     else:
@@ -473,6 +488,7 @@ def display_metric(label, value, delta=None, delta_color="normal", arrow=None):
             <div class="metric-value">{value}</div>
         </div>
         """, unsafe_allow_html=True)
+
 
 
 
@@ -543,8 +559,7 @@ if ticker_data is not None and not ticker_data.empty:
             strategy_return = df_metrics.loc['Return [%]', 'Value']
             bh_return = df_metrics.loc['Buy & Hold Return [%]', 'Value']
             outperformance = strategy_return - bh_return
-            arrow = "↑" if outperformance > 0 else "↓"
-            display_metric("Strategy vs. Buy & Hold", f"{outperformance:.2f}%", delta=f"{outperformance:.2f}%", arrow=arrow, delta_color="inverse" if outperformance < 0 else "normal")
+            display_metric("Strategy vs. Buy & Hold", f"{outperformance:.2f}%", delta=f"{outperformance:.2f}%", show_arrow=True)
         with col5:
             display_metric("Win Rate", f"{df_metrics.loc['Win Rate [%]', 'Value']:.2f}%")
 
