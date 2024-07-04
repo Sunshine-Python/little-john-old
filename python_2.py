@@ -455,9 +455,26 @@ with st.sidebar:
     cash = st.number_input('Starting Cash', min_value=1000, max_value=100000, value=10000)
     commission = st.slider('Commission (%)', min_value=0.0, max_value=0.05, value=0.002, step=0.001)
 
-# Function to display metrics with custom CSS
-def display_metric(label, value, delta=None, delta_color="normal"):
-    if delta:
+
+
+# Function to display metrics with custom CSS and optional arrow for delta
+def display_metric(label, value, delta=None, delta_color="normal", show_arrow=False):
+    arrow = ""
+    if show_arrow and delta is not None:
+        delta_value = float(delta)
+        if delta_value >= 0:
+            arrow = "&#9650;"  # Up arrow
+            color = "green"
+        else:
+            arrow = "&#9660;"  # Down arrow
+            color = "red"
+        st.markdown(f"""
+        <div class="metric-container">
+            <div class="metric-label">{label}</div>
+            <div class="metric-value">{value} <span style="color: {color};">{arrow}</span></div>
+        </div>
+        """, unsafe_allow_html=True)
+    elif delta:
         st.markdown(f"""
         <div class="metric-container">
             <div class="metric-label">{label}</div>
@@ -472,6 +489,9 @@ def display_metric(label, value, delta=None, delta_color="normal"):
             <div class="metric-value">{value}</div>
         </div>
         """, unsafe_allow_html=True)
+
+
+
 
 # Main content area
 ticker_data = fetch_data(ticker, start_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d'))
@@ -532,7 +552,7 @@ if ticker_data is not None and not ticker_data.empty:
             strategy_return = df_metrics.loc['Return [%]', 'Value']
             bh_return = df_metrics.loc['Buy & Hold Return [%]', 'Value']
             outperformance = strategy_return - bh_return
-            display_metric("Strategy vs. Buy & Hold", f"{outperformance:.2f}%", delta=f"{outperformance:.2f}%", delta_color="inverse")
+            display_metric("Strategy vs. Buy & Hold", f"{outperformance:.2f}%", delta=f"{outperformance:.2f}%", delta_color="inverse", show_arrow=True)
         with col5:
             display_metric("Win Rate", f"{df_metrics.loc['Win Rate [%]', 'Value']:.2f}%")
 
