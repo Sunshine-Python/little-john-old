@@ -404,14 +404,14 @@ def strategy_viz(strategy):
 
 def strategy_description(strategy):
     descriptions = {
-        'Buy and Hold': "This strategy simply buys the stock at the beginning and holds it until the end of the period.",
+        'Buy and Hold': "The Buy and Hold strategy simply buys the stock at the beginning of the period and holds it until the end. There are no parameters to adjust.",
         'SMA Cross': "This strategy uses two Simple Moving Averages (SMA) and generates buy/sell signals when they cross.",
         'RSI': "The Relative Strength Index (RSI) strategy buys when the RSI is oversold and sells when it's overbought.",
         'MACD': "The Moving Average Convergence Divergence (MACD) strategy generates signals based on the crossover of the MACD line and the signal line.",
         'Bollinger Bands': "This strategy uses Bollinger Bands to identify overbought and oversold conditions.",
         'Mean Reversion': "The Mean Reversion strategy assumes that prices and other indicators tend to move back towards their average over time.",
         'Momentum': "The Momentum strategy is based on the idea that trends in stock prices tend to continue for some time.",
-        'VWAP': "The Volume Weighted Average Price (VWAP) strategy uses the VWAP as a benchmark for trading decisions.",
+        'VWAP': "The VWAP strategy uses the Volume Weighted Average Price. There are no parameters to adjust as it's calculated based on price and volume data.",
         'Stochastic': "The Stochastic Oscillator strategy uses overbought and oversold levels to generate trading signals."
     }
     st.write(descriptions.get(strategy, "No explanation available for this strategy."))
