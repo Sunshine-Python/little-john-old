@@ -455,11 +455,7 @@ with st.sidebar:
     cash = st.number_input('Starting Cash', min_value=1000, max_value=100000, value=10000)
     commission = st.slider('Commission (%)', min_value=0.0, max_value=0.05, value=0.002, step=0.001)
 
-# Main content area
-ticker_data = fetch_data(ticker, start_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d'))
-
-
-# Wrap each metric in a div with the "metric-container" class
+# Function to display metrics with custom CSS
 def display_metric(label, value, delta=None, delta_color="normal"):
     if delta:
         st.markdown(f"""
@@ -477,6 +473,8 @@ def display_metric(label, value, delta=None, delta_color="normal"):
         </div>
         """, unsafe_allow_html=True)
 
+# Main content area
+ticker_data = fetch_data(ticker, start_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d'))
 
 if ticker_data is not None and not ticker_data.empty:
     # Map strategy names to classes
