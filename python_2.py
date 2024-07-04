@@ -524,7 +524,8 @@ if ticker_data is not None and not ticker_data.empty:
         with row3_col1:
             st.subheader('Equity Curve')
             fig_equity = go.Figure(data=[go.Scatter(x=output['_equity_curve'].index, y=output['_equity_curve']['Equity'], mode='lines')])
-            fig_equity.update_layout(title=f'{ticker} Equity Curve', xaxis_title='Date', yaxis_title='Equity', height=350)
+            fig_equity.update_layout(title=f'{ticker} Equity Curve', xaxis_title='Date', yaxis_title='Equity', height=350, plot_bgcolor='white',
+        paper_bgcolor='white', margin=dict(l=30, r=30))
             st.plotly_chart(fig_equity, use_container_width=True)
 
         with row3_col2:
@@ -533,7 +534,8 @@ if ticker_data is not None and not ticker_data.empty:
                 go.Bar(name='Strategy', x=['Return'], y=[strategy_return]),
                 go.Bar(name='Buy & Hold', x=['Return'], y=[bh_return])
             ])
-            fig_return_comparison.update_layout(title='Strategy vs. Buy & Hold Return Comparison', height=350)
+            fig_return_comparison.update_layout(title='Strategy vs. Buy & Hold Return Comparison', height=350, plot_bgcolor='white',
+        paper_bgcolor='white', margin=dict(l=30, r=30))
             st.plotly_chart(fig_return_comparison, use_container_width=True)
 
         with row3_col3:
@@ -551,7 +553,7 @@ if ticker_data is not None and not ticker_data.empty:
                     radialaxis=dict(visible=True, range=[0, max(radar_values)])
                 ),
                 showlegend=False,
-                height=350,
+                height=350,margin=dict(l=30, r=30),plot_bgcolor='white', paper_bgcolor='white',
                 title='Strategy Performance Radar'
             )
             st.plotly_chart(fig_radar, use_container_width=True)
