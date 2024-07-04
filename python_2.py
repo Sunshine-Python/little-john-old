@@ -533,11 +533,11 @@ if ticker_data is not None and not ticker_data.empty:
                 go.Bar(name='Strategy', x=['Return'], y=[strategy_return]),
                 go.Bar(name='Buy & Hold', x=['Return'], y=[bh_return])
             ])
-            fig_return_comparison.update_layout(title='Strategy vs. Buy & Hold Return Comparison')
+            fig_return_comparison.update_layout(title='Strategy vs. Buy & Hold Return Comparison', height=350)
             st.plotly_chart(fig_return_comparison, use_container_width=True)
 
         with row3_col3:
-            st.subheader('Strategy Performance Radar')
+            st.subheader('Strategy Performance')
             radar_metrics = ['Return [%]', 'Sharpe Ratio', 'Sortino Ratio', 'Calmar Ratio', 'Win Rate [%]']
             radar_values = [df_metrics.loc[metric, 'Value'] for metric in radar_metrics]
 
