@@ -26,52 +26,7 @@ st.markdown("""
 
 
 # Fetch data
-import config as cfg
-from eodhd import APIClient
 
-
-
-# def main() -> None:
-  #  """Main"""
-
-    # api = APIClient(cfg.API_KEY)
-
-
-    # resp = api.get_stock_market_tick_data(from_timestamp = '1627896900', to_timestamp = '1630575300', symbol = 'AAPL', limit = 1)
-    # print(resp)
-
-# if __name__ == "__main__":
-    # main()
-
-
-def fetch_data(ticker, start_date, end_date):
-    """
-    Fetches historical stock data from EOD.
-    """
-    api = APIClient(cfg.API_KEY)
-    from_timestamp = int(pd.to_datetime(start_date).timestamp())
-    to_timestamp = int(pd.to_datetime(end_date).timestamp())
-
-    try:
-        response = api.get_stock_market_tick_data(
-            from_timestamp=from_timestamp,
-            to_timestamp=to_timestamp,
-            symbol=ticker,
-            limit=1000
-        )
-        if not response:
-            return None
-
-        df = pd.DataFrame(response)
-        df['date'] = pd.to_datetime(df['date'])
-        df.set_index('date', inplace=True)
-        if 'adjusted_close' in df.columns:
-            df = df.drop(columns=['adjusted_close'])
-        df.columns = ['Open', 'High', 'Low', 'Close', 'Volume']
-        return df
-    except Exception as e:
-        st.error(f"Error fetching data: {str(e)}")
-        return None
 
 
 
