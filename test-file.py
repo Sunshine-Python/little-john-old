@@ -67,8 +67,6 @@ def fetch_data(ticker, start_date, end_date):
 
 
 
-
-
 # Buy and Hold Strategy
 class BuyAndHoldStrategy(Strategy):
     def init(self):
@@ -79,12 +77,15 @@ class BuyAndHoldStrategy(Strategy):
             self.buy()
 
 def buy_and_hold_viz():
+    st.write("The Buy and Hold strategy simply buys the stock at the beginning of the period and holds it until the end. There are no parameters to adjust.")
     x = np.arange(100)
     y = np.cumsum(np.random.randn(100)) + 100
     fig = go.Figure(go.Scatter(x=x, y=y, mode='lines', name='Stock Price'))
     fig.update_layout(title='Buy and Hold Visualization', xaxis_title='Time', yaxis_title='Price', height=300, plot_bgcolor='rgba(0,0,0,0)',
         paper_bgcolor='rgba(0,0,0,0)', margin=dict(l=30, r=30))
     st.plotly_chart(fig)
+
+
 
 # SMA Cross Strategy
 class SmaCross(Strategy):
