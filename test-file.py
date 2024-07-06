@@ -24,23 +24,6 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-"""
-def fetch_data(ticker, start_date, end_date):
-    """
-    Fetches historical stock data from Yahoo Finance.
-    """
-    try:
-        data = yf.download(ticker, start=start_date, end=end_date, progress=False)
-        if data.empty:
-            return None
-        data = data.drop(columns=['Adj Close'])
-        data.columns = ['Open', 'High', 'Low', 'Close', 'Volume']
-        return data
-    except Exception as e:
-        st.error(f"Error fetching data: {str(e)}")
-        return None
-"""
-
 
 # Fetch data
 import requests
