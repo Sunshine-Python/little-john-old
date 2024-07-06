@@ -32,7 +32,7 @@ from eodhd import APIClient
 
 
 # def main() -> None:
-    """Main"""
+  #  """Main"""
 
     # api = APIClient(cfg.API_KEY)
 
