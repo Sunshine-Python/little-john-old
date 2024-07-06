@@ -24,20 +24,52 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
+
 def fetch_data(ticker, start_date, end_date):
     """
-    Fetches historical stock data from Yahoo Finance.
+    Fetches historical stock data from Yahoo Finance at 5-minute intervals.
     """
+    # Convert start_date and end_date to datetime objects if they're strings
+    if isinstance(start_date, str):
+        start_date = datetime.strptime(start_date, '%Y-%m-%d')
+    if isinstance(end_date, str):
+        end_date = datetime.strptime(end_date, '%Y-%m-%d')
+
+    # Calculate the date 60 days ago
+    sixty_days_ago = datetime.now() - timedelta(days=60)
+
+    # If start_date is more than 60 days ago, adjust it
+    if start_date < sixty_days_ago:
+        print(f"Warning: Adjusted start date to {sixty_days_ago.strftime('%Y-%m-%d')} due to YFinance limitations.")
+        start_date = sixty_days_ago
+
     try:
-        data = yf.download(ticker, start=start_date, end=end_date, progress=False)
+        # Fetch data
+        data = yf.download(ticker, start=start_date, end=end_date, interval='2m')
+        
+        # If data is empty, try fetching daily data instead
         if data.empty:
+            print("No 2-minute interval data available. Fetching daily data instead.")
+            data = yf.download(ticker, start=start_date, end=end_date, interval='1d')
+
+        # Check again if data is still empty
+        if data.empty:
+            st.error("No data available for the given period.")
             return None
-        data = data.drop(columns=['Adj Close'])
+
+        # Drop 'Adj Close' column if it exists
+        if 'Adj Close' in data.columns:
+            data = data.drop(columns=['Adj Close'])
+
+        # Rename columns
         data.columns = ['Open', 'High', 'Low', 'Close', 'Volume']
+
         return data
     except Exception as e:
         st.error(f"Error fetching data: {str(e)}")
         return None
+
+
 
 # Buy and Hold Strategy
 class BuyAndHoldStrategy(Strategy):
