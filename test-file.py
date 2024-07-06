@@ -26,44 +26,24 @@ st.markdown("""
 
 
 # Fetch data
-import requests
-import pandas as pd
-import streamlit as st
+import config as cfg
+from eodhd import APIClient
 
-def fetch_data(ticker, start_date, end_date, api_token):
-    """
-    Fetches historical stock data from EOD.
-    """
-    url = f"https://eodhistoricaldata.com/api/eod/{ticker}"
-    params = {
-        'from': "2000-01-01",
-        'to': "2023-12-31",
-        'api_token': "628ce3ec934528.37783986",
-        'period': 'd',  # daily data
-        'fmt': 'json'
-    }
 
-    try:
-        response = requests.get(url, params=params)
-        response.raise_for_status()  # Raise an HTTPError for bad responses (4xx and 5xx)
-        data = response.json()
 
-        if not data:
-            return None
+def main() -> None:
+    """Main"""
 
-        df = pd.DataFrame(data)
-        df['date'] = pd.to_datetime(df['date'])
-        df.set_index('date', inplace=True)
-        df = df.drop(columns=['adjusted_close'])
-        df.columns = ['Open', 'High', 'Low', 'Close', 'Volume']
+    api = APIClient(cfg.API_KEY
 
-        return df
-    except requests.exceptions.RequestException as e:
-        st.error(f"Error fetching data: {str(e)}")
-        return None
-    except ValueError as e:
-        st.error(f"Error processing data: {str(e)}")
-        return None
+
+    resp = api.get_stock_market_tick_data(from_timestamp = '1627896900', to_timestamp = '1630575300', symbol = 'AAPL', limit = 1)
+    print(resp)
+
+if __name__ == "__main__":
+    main()
+
+
 
 
 
