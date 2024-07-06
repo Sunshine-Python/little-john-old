@@ -34,7 +34,7 @@ from eodhd import APIClient
 def main() -> None:
     """Main"""
 
-    api = APIClient(cfg.API_KEY
+    api = APIClient(cfg.API_KEY)
 
 
     resp = api.get_stock_market_tick_data(from_timestamp = '1627896900', to_timestamp = '1630575300', symbol = 'AAPL', limit = 1)
