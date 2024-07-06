@@ -42,7 +42,7 @@ def fetch_data(ticker, start_date, end_date):
 """
 
 
-######## Fetch data
+# Fetch data
 import requests
 import pandas as pd
 import streamlit as st
