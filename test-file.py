@@ -7,6 +7,8 @@ import pandas as pd
 import numpy as np
 import ta
 import plotly.graph_objects as go
+from datetime import datetime, timedelta
+
 
 st.set_page_config(layout="wide")
 
@@ -25,8 +27,41 @@ st.markdown("""
 
 
 
-# Fetch data
+# Defining fetch_data function
+def fetch_data(ticker, start_date, end_date):
+    """
+    Fetches historical stock data from Yahoo Finance at 5-minute intervals.
+    """
+    # Convert start_date and end_date to datetime objects if they're strings
+    if isinstance(start_date, str):
+        start_date = datetime.strptime(start_date, '%Y-%m-%d')
+    if isinstance(end_date, str):
+        end_date = datetime.strptime(end_date, '%Y-%m-%d')
 
+    # Calculate the date 60 days ago
+    sixty_days_ago = datetime.now() - timedelta(days=60)
+
+    # If start_date is more than 60 days ago, adjust it
+    if start_date < sixty_days_ago:
+        print(f"Warning: Adjusted start date to {sixty_days_ago.strftime('%Y-%m-%d')} due to YFinance limitations.")
+        start_date = sixty_days_ago
+
+    # Fetch data
+    data = yf.download(ticker, start=start_date, end=end_date, interval='2m')
+    
+    # If data is empty, try fetching daily data instead
+    if data.empty:
+        print("No 15-minute interval data available. Fetching daily data instead.")
+        data = yf.download(ticker, start=start_date, end=end_date, interval='1d')
+
+    # Drop 'Adj Close' column if it exists
+    if 'Adj Close' in data.columns:
+        data = data.drop(columns=['Adj Close'])
+
+    # Rename columns
+    data.columns = ['Open', 'High', 'Low', 'Close', 'Volume']
+
+    return data
 
 
 
