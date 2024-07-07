@@ -188,7 +188,8 @@ interact(
 
 
 
-# Buy and Hold Strategy
+# BUY AND HOLD STRATEGY
+
 class BuyAndHoldStrategy(Strategy):
     def init(self):
         pass
@@ -211,7 +212,10 @@ def buy_and_hold_viz():
 
 
 
-# SMA Cross Strategy
+
+
+
+# SMA CROSS STRATEGY
 class SmaCross(Strategy):
     n1 = 10
     n2 = 20
