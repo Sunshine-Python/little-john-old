@@ -30,20 +30,38 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
+
+
+
+
 def fetch_data(ticker, start_date, end_date):
-    """
-    Fetches historical stock data from Yahoo Finance.
-    """
     try:
-        data = yf.download(ticker, start=start_date, end=end_date, progress=False)
+        data = yf.download(ticker, start=start_date, end=end_date, interval='5m', progress=False)
+
+        if 'Adj Close' in data.columns:
+            data = data.drop(columns=['Adj Close'])
+
+        # Check again if data is still empty
         if data.empty:
+            st.error("No data available for the given period.")
             return None
-        data = data.drop(columns=['Adj Close'])
+
         data.columns = ['Open', 'High', 'Low', 'Close', 'Volume']
+        data = data[data['Volume'] > 0]
+
+        data.index = data.index.tz_localize(None)
+        
         return data
     except Exception as e:
         st.error(f"Error fetching data: {str(e)}")
         return None
+
+
+
+
+
+
+
 
 # Buy and Hold Strategy
 class BuyAndHoldStrategy(Strategy):
