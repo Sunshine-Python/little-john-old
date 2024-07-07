@@ -39,31 +39,7 @@ st.markdown("""
 
 
 
-# Add custom CSS for styling the navigation options
-st.markdown("""
-    <style>
-    .nav-item {
-        font-size: 1rem;
-        font-weight: bold;
-        padding: 10px 15px;
-        margin: 5px 0;
-        border-radius: 5px;
-        cursor: pointer;
-        display: block;
-    }
-    .nav-item:hover {
-        background-color: #f0f0f0;
-    }
-    .nav-item.selected {
-        background-color: #e0e0e0;
-        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    }
-    .stRadio > div {
-        display: flex;
-        flex-direction: column;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+
 
 
 
@@ -548,18 +524,11 @@ def display_comparison_content():
     st.write("This section can be used to compare different strategies or other comparisons.")
 
 # Create the navigation options
-selected_view = st.sidebar.radio(
+selected_view = st.sidebar.markdown(
     "",
     ["Main", "Comparison"],
     format_func=lambda x: f"{x.capitalize()}"
 )
-
-# Sidebar Inputs in the first column
-logo_url = "little-john-logo.png"
-st.sidebar.image(logo_url, use_column_width=True)
-
-st.sidebar.header('📊 Stock Selection')
-ticker = st.sidebar.text_input('Enter stock ticker', value='AAPL')
 
 # Apply the selected style dynamically
 st.sidebar.markdown(f"""
@@ -578,6 +547,15 @@ st.sidebar.markdown(f"""
     """, unsafe_allow_html=True)
 
 
+
+
+
+# Sidebar Inputs in the first column
+logo_url = "little-john-logo.png"
+st.sidebar.image(logo_url, use_column_width=True)
+
+st.sidebar.header('📊 Stock Selection')
+ticker = st.sidebar.text_input('Enter stock ticker', value='AAPL')
 
     
 
