@@ -506,31 +506,54 @@ h1, h2, h3 {
 
 st.title('Advanced Stock Trading Strategy Backtester')
 
-# Sidebar for user inputs
+
+
+
+
+
+
+# Define a function to display the comparison content
+def display_comparison_content():
+    st.title('Comparison View')
+    st.write("This section can be used to compare different strategies or other comparisons.")
+
+# Create clickable options for "Main" and "Comparison" above the sidebar input
+selected_view = st.sidebar.radio("Select View", ["Main", "Comparison"])
+
+# Sidebar Inputs in the first column
 logo_url = "little-john-logo.png"
 st.sidebar.image(logo_url, use_column_width=True)
 
-with st.sidebar:
-    st.header('📊 Stock Selection')
-    ticker = st.text_input('Enter stock ticker', value='AAPL')
+st.sidebar.header('📊 Stock Selection')
+ticker = st.sidebar.text_input('Enter stock ticker', value='AAPL')
 
-    # Calculate the date 60 days ago
-    sixty_days_ago = datetime.now() - timedelta(days=59)
-    
-    col1, col2 = st.columns(2)
-    with col1:
-        start_date = st.date_input('Start Date', value=sixty_days_ago, min_value=sixty_days_ago, max_value=datetime.now())
-    with col2:
-        end_date = st.date_input('End Date', value=datetime.now(), min_value=sixty_days_ago, max_value=datetime.now())
+# Calculate the date 60 days ago
+sixty_days_ago = datetime.now() - timedelta(days=59)
 
-    st.header('🧮 Strategy Selection')
-    strategy_option = st.selectbox('Select Strategy', [
-        'Buy and Hold', 'SMA Cross', 'RSI', 'MACD', 'Bollinger Bands', 'Mean Reversion', 'Momentum', 'VWAP', 'Stochastic'
-    ])
+start_date = st.sidebar.date_input('Start Date', value=sixty_days_ago, min_value=sixty_days_ago, max_value=datetime.now())
+end_date = st.sidebar.date_input('End Date', value=datetime.now(), min_value=sixty_days_ago, max_value=datetime.now())
 
-    st.header('💰 Backtest Settings')
-    cash = st.number_input('Starting Cash', min_value=1000, max_value=100000, value=10000)
-    commission = st.slider('Commission (%)', min_value=0.0, max_value=0.05, value=0.002, step=0.001)
+st.sidebar.header('🧮 Strategy Selection')
+strategy_option = st.sidebar.selectbox('Select Strategy', [
+    'Buy and Hold', 'SMA Cross', 'RSI', 'MACD', 'Bollinger Bands', 'Mean Reversion', 'Momentum', 'VWAP', 'Stochastic'
+])
+
+st.sidebar.header('💰 Backtest Settings')
+cash = st.sidebar.number_input('Starting Cash', min_value=1000, max_value=100000, value=10000)
+commission = st.sidebar.slider('Commission (%)', min_value=0.0, max_value=0.05, value=0.002, step=0.001)
+
+# Main content area based on the selected view
+if selected_view == "Main":
+    display_main_content()
+elif selected_view == "Comparison":
+    display_comparison_content()
+
+
+
+
+
+
+
 
 
 # Function to set metric containers as divs
