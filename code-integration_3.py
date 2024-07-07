@@ -119,6 +119,70 @@ def run_backtest(strategy, data, cash=10000, commission=0.002):
 
 
 
+
+# PRICE AND VOLUME PLOT
+
+def plot_stock_price_and_volume(ticker, start_date, end_date):
+    data = fetch_data_pv(ticker, start_date, end_date)
+    
+    if 'Datetime' not in data.columns:
+        data['Datetime'] = data.index
+    
+    fig = go.Figure()
+    
+    fig.add_trace(go.Scatter(
+        x=data.index,
+        y=data['Close'],
+        name='Price',
+        line=dict(color='blue'),
+        hovertemplate='Date: %{text}<br>Price: $%{y:.2f}<extra></extra>',  # Custom hover template
+        text=data['Datetime'].dt.strftime('%Y-%m-%d %H:%M')  # Format date and time for hover text
+    ))
+    
+    fig.add_trace(go.Bar(
+        x=data.index,
+        y=data['Volume'],
+        name='Volume',
+        yaxis='y2',
+        marker=dict(color='rgba(0,0,0,0.2)'),
+        hovertemplate='Date: %{text}<br>Volume: %{y:,.0f}<extra></extra>',  # Custom hover template for volume
+        text=data['Datetime'].dt.strftime('%Y-%m-%d %H:%M')  # Format date and time for hover text
+    ))
+    
+    # Get indices of the first point of each day
+    data['Date'] = data['Datetime'].dt.date
+    daily_indices = data.groupby('Date').first().index
+    
+    fig.update_layout(
+        title=f'{ticker} Stock Price and Trading Volume',
+        xaxis=dict(
+            title='Date',
+            tickmode='array',
+            tickvals=[data[data['Date'] == date].index[0] for date in daily_indices],
+            ticktext=[date.strftime('%Y-%m-%d') for date in daily_indices],
+            rangeslider=dict(visible=False),
+        ),
+        yaxis_title='Price',
+        yaxis2=dict(
+            title='Volume',
+            titlefont=dict(color='black'),
+            tickfont=dict(color='black'),
+            anchor='x',
+            overlaying='y',
+            side='right'
+        ),
+        showlegend=False,
+        height=600,
+        hovermode='x unified'  # This will show hover info for all traces at once
+    )
+    
+    fig.show()
+
+
+
+
+
+
 # Buy and Hold Strategy
 class BuyAndHoldStrategy(Strategy):
     def init(self):
