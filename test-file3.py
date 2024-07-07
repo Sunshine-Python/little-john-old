@@ -14,10 +14,9 @@ import pandas_market_calendars as mcal
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 from ipywidgets import interact, interactive, fixed, widgets
-%matplotlib inline
 
-nyse = mcal.get_calendar('NYSE')
 # full_calendar = nyse.schedule[start_date:end_date]
+nyse = mcal.get_calendar('NYSE')
 
 
 # FETCH DATA
