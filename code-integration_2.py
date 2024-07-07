@@ -625,18 +625,30 @@ if ticker_data is not None and not ticker_data.empty:
 
 
 
+
+
 # Define the function to plot the equity curve
-
-# Assuming 'output' is a dictionary containing the '_equity_curve' DataFrame
-equity_curve = output['_equity_curve']
-
-# Filter for trading days at market close (3:55 PM)
-trading_day_equity = equity_curve[
-    (equity_curve.index.dayofweek < 5) &  # Monday = 0, Friday = 4
-    (equity_curve.index.hour == 15) &     # 3:00 PM (15:00)
-    (equity_curve.index.minute == 55)     # Last data point before 4:00 PM
-
-
+def plot_equity_curve(output, title):
+    equity_curve = output['_equity_curve']
+    
+    # Filter for trading days at market close (3:55 PM)
+    trading_day_equity = equity_curve[
+        (equity_curve.index.dayofweek < 5) &  # Monday = 0, Friday = 4
+        (equity_curve.index.hour == 15) &     # 3:00 PM (15:00)
+        (equity_curve.index.minute == 55)     # Last data point before 4:00 PM
+    ]
+    
+    fig = go.Figure(data=[go.Scatter(x=trading_day_equity.index, y=trading_day_equity['Equity'], mode='lines')])
+    fig.update_layout(
+        title=title,
+        xaxis_title='Date',
+        yaxis_title='Equity',
+        height=350,
+        plot_bgcolor='rgba(0,0,0,0)',
+        paper_bgcolor='rgba(0,0,0,0)',
+        margin=dict(l=30, r=30)
+    )
+    return fig
 
         
 
@@ -662,16 +674,7 @@ trading_day_equity = equity_curve[
 
         with row3_col1:
             st.subheader('Equity Curve')
-            fig_equity = go.Figure(data=[go.Scatter(x=trading_day_equity.index, y=trading_day_equity['Equity'], mode='lines')])
-            fig_equity.update_layout(
-                title=f'{ticker} Equity Curve',
-                xaxis_title='Date',
-                yaxis_title='Equity',
-                height=350,
-                plot_bgcolor='rgba(0,0,0,0)',
-                paper_bgcolor='rgba(0,0,0,0)',
-                margin=dict(l=30, r=30)
-                )
+            fig_equity = plot_equity_curve(output, f'{ticker} Equity Curve')
             st.plotly_chart(fig_equity, use_container_width=True)
 
         with row3_col2:
