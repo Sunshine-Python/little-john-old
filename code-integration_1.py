@@ -35,6 +35,35 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
+# Add CSS for styling the navigation options
+st.markdown("""
+    <style>
+    .css-1d391kg {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #ffffff;
+        background-color: #2e8b57;
+        border-radius: 5px;
+        padding: 5px 10px;
+    }
+    .css-1d391kg:hover {
+        background-color: #1c5f38;
+    }
+    .stRadio > div {
+        display: flex;
+        justify-content: space-evenly;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+# Create clickable options for "Main" and "Comparison" in the sidebar
+selected_view = st.sidebar.radio(
+    "",
+    ["Main", "Comparison"],
+    format_func=lambda x: f"{x.capitalize()}",
+    horizontal=True
+)
+
 
 
 # FETCH DATA
