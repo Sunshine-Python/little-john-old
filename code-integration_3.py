@@ -72,7 +72,6 @@ def fetch_data(ticker, start_date, end_date):
 
 
 
-
 def fetch_data_pv(ticker, start_date, end_date):
     # Convert start_date and end_date to datetime objects if they're strings
     if isinstance(start_date, str):
@@ -112,6 +111,14 @@ def fetch_data_pv(ticker, start_date, end_date):
 
 
 
+# RUN BACKTEST
+def run_backtest(strategy, data, cash=10000, commission=0.002):
+    bt = Backtest(data, strategy, cash=cash, commission=commission)
+    output = bt.run()
+    return output
+
+
+
 # Buy and Hold Strategy
 class BuyAndHoldStrategy(Strategy):
     def init(self):
@@ -128,6 +135,12 @@ def buy_and_hold_viz():
     fig.update_layout(title='Buy and Hold Visualization', xaxis_title='Time', yaxis_title='Price', height=300, plot_bgcolor='rgba(0,0,0,0)',
         paper_bgcolor='rgba(0,0,0,0)', margin=dict(l=30, r=30))
     st.plotly_chart(fig)
+
+
+
+
+
+
 
 # SMA Cross Strategy
 class SmaCross(Strategy):
