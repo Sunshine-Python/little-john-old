@@ -598,16 +598,17 @@ if ticker_data is not None and not ticker_data.empty:
 
 
 
-
 def display_metrics(output):
-            metrics = ['Start', 'End', 'Duration', 'Exposure Time [%]', 'Equity Final [$]', 'Equity Peak [$]', 
+    metrics = ['Start', 'End', 'Duration', 'Exposure Time [%]', 'Equity Final [$]', 'Equity Peak [$]', 
                'Return [%]', 'Buy & Hold Return [%]', 'Return (Ann.) [%]', 'Volatility (Ann.) [%]', 
                'Sharpe Ratio', 'Sortino Ratio', 'Calmar Ratio', 'Max. Drawdown [%]', 'Avg. Drawdown [%]', 
                'Max. Drawdown Duration', 'Avg. Drawdown Duration', 'Trades', 'Win Rate [%]', 
                'Best Trade [%]', 'Worst Trade [%]', 'Avg. Trade [%]', 'Max. Trade Duration', 
                'Avg. Trade Duration', 'Profit Factor', 'Expectancy [%]']
     
-            return {k: output[k] for k in metrics if k in output}
+    return {k: output[k] for k in metrics if k in output}
+
+
 
 
     
@@ -624,13 +625,12 @@ def display_metrics(output):
             strategy_viz(strategy_option)
 
         # Second row: Performance Metrics
-        
             st.subheader('Performance Metrics')
             selected_metrics = display_metrics(output)
             df_metrics = pd.DataFrame(selected_metrics, index=['Value']).T
         
         
-   
+
 
 
 
