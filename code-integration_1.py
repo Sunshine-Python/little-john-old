@@ -518,67 +518,82 @@ st.title('Advanced Stock Trading Strategy Backtester')
 
 
 
+
+
+    
 # Define a function to display the comparison content
 def display_comparison_content():
     st.title('Comparison View')
     st.write("This section can be used to compare different strategies or other comparisons.")
 
+# Add custom CSS for styling the navigation options
+st.markdown("""
+    <style>
+    .nav-item {
+        font-size: 1rem;
+        font-weight: bold;
+        padding: 10px 15px;
+        margin: 5px 0;
+        border-radius: 5px;
+        cursor: pointer;
+        display: block;
+        text-align: center;
+    }
+    .nav-item:hover {
+        background-color: #f0f0f0;
+    }
+    .nav-item.selected {
+        background-color: #e0e0e0;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    .stRadio > div {
+        display: flex;
+        flex-direction: column;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
 # Create the navigation options
-selected_view = st.sidebar.markdown(
-    "",
+selected_view = st.sidebar.radio(
+    "Select View",
     ["Main", "Comparison"],
     format_func=lambda x: f"{x.capitalize()}"
 )
 
-# Apply the selected style dynamically
+# Sidebar navigation items with dynamic style
 st.sidebar.markdown(f"""
-    <style>
-    .nav-item[data-option="{selected_view}"] {{
-        background-color: #e0e0e0;
-        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    }}
-    </style>
+    <div class="nav-item {'selected' if selected_view == 'Main' else ''}" data-option="Main" onclick="window.location.href='/?option=Main'">Main</div>
+    <div class="nav-item {'selected' if selected_view == 'Comparison' else ''}" data-option="Comparison" onclick="window.location.href='/?option=Comparison'">Comparison</div>
     """, unsafe_allow_html=True)
-
-# Sidebar navigation items
-st.sidebar.markdown(f"""
-    <div class="nav-item" data-option="Main" onclick="window.location.href='/?option=Main'">Main</div>
-    <div class="nav-item" data-option="Comparison" onclick="window.location.href='/?option=Comparison'">Comparison</div>
-    """, unsafe_allow_html=True)
-
-
-
-
-
-# Sidebar Inputs in the first column
-logo_url = "little-john-logo.png"
-st.sidebar.image(logo_url, use_column_width=True)
-
-st.sidebar.header('📊 Stock Selection')
-ticker = st.sidebar.text_input('Enter stock ticker', value='AAPL')
-
-    
-
-# Calculate the date 60 days ago
-sixty_days_ago = datetime.now() - timedelta(days=59)
-
-start_date = st.sidebar.date_input('Start Date', value=sixty_days_ago, min_value=sixty_days_ago, max_value=datetime.now())
-end_date = st.sidebar.date_input('End Date', value=datetime.now(), min_value=sixty_days_ago, max_value=datetime.now())
-
-st.sidebar.header('🧮 Strategy Selection')
-strategy_option = st.sidebar.selectbox('Select Strategy', [
-    'Buy and Hold', 'SMA Cross', 'RSI', 'MACD', 'Bollinger Bands', 'Mean Reversion', 'Momentum', 'VWAP', 'Stochastic'
-])
-
-st.sidebar.header('💰 Backtest Settings')
-cash = st.sidebar.number_input('Starting Cash', min_value=1000, max_value=100000, value=10000)
-commission = st.sidebar.slider('Commission (%)', min_value=0.0, max_value=0.05, value=0.002, step=0.001)
 
 # Main content area based on the selected view
 if selected_view == "Main":
+    # Sidebar Inputs in the first column
+    logo_url = "little-john-logo.png"
+    st.sidebar.image(logo_url, use_column_width=True)
+
+    st.sidebar.header('📊 Stock Selection')
+    ticker = st.sidebar.text_input('Enter stock ticker', value='AAPL')
+
+    # Calculate the date 60 days ago
+    sixty_days_ago = datetime.now() - timedelta(days=59)
+
+    start_date = st.sidebar.date_input('Start Date', value=sixty_days_ago, min_value=sixty_days_ago, max_value=datetime.now())
+    end_date = st.sidebar.date_input('End Date', value=datetime.now(), min_value=sixty_days_ago, max_value=datetime.now())
+
+    st.sidebar.header('🧮 Strategy Selection')
+    strategy_option = st.sidebar.selectbox('Select Strategy', [
+        'Buy and Hold', 'SMA Cross', 'RSI', 'MACD', 'Bollinger Bands', 'Mean Reversion', 'Momentum', 'VWAP', 'Stochastic'
+    ])
+
+    st.sidebar.header('💰 Backtest Settings')
+    cash = st.sidebar.number_input('Starting Cash', min_value=1000, max_value=100000, value=10000)
+    commission = st.sidebar.slider('Commission (%)', min_value=0.0, max_value=0.05, value=0.002, step=0.001)
+    
     display_main_content()
 elif selected_view == "Comparison":
     display_comparison_content()
+
 
 
 
