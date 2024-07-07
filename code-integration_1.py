@@ -566,17 +566,17 @@ if 'view' not in st.session_state:
     st.session_state.view = 'Main'
 
 # Sidebar navigation items
+def set_view(view):
+    st.session_state.view = view
+
+# Sidebar buttons for navigation
 if st.sidebar.button('Main'):
-    st.session_state.view = 'Main'
+    set_view('Main')
 if st.sidebar.button('Comparison'):
-    st.session_state.view = 'Comparison'
+    set_view('Comparison')
 
 # Apply the selected style dynamically
 selected_view = st.session_state.view
-st.sidebar.markdown(f"""
-    <div class="nav-item {'selected' if selected_view == 'Main' else ''}">Main</div>
-    <div class="nav-item {'selected' if selected_view == 'Comparison' else ''}">Comparison</div>
-    """, unsafe_allow_html=True)
 
 # Main content area based on the selected view
 if selected_view == "Main":
@@ -605,6 +605,7 @@ if selected_view == "Main":
     display_main_content()
 elif selected_view == "Comparison":
     display_comparison_content()
+
 
 
 
