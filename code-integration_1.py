@@ -524,7 +524,8 @@ st.title('Advanced Stock Trading Strategy Backtester')
 
 
 
-
+import streamlit as st
+from datetime import datetime, timedelta
 
 # Define a function to display the main content
 def display_main_content():
@@ -557,10 +558,6 @@ st.markdown("""
         background-color: #e0e0e0;
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
     }
-    .stRadio > div {
-        display: flex;
-        flex-direction: column;
-    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -568,20 +565,25 @@ st.markdown("""
 if 'view' not in st.session_state:
     st.session_state.view = 'Main'
 
-# Sidebar navigation items with dynamic style
+# Sidebar navigation items
+def set_view(view):
+    st.session_state.view = view
+
+if st.sidebar.button("Main"):
+    set_view('Main')
+
+if st.sidebar.button("Comparison"):
+    set_view('Comparison')
+
+# Apply the selected style dynamically
+selected_view = st.session_state.view
 st.sidebar.markdown(f"""
-    <div class="nav-item {'selected' if st.session_state.view == 'Main' else ''}" onclick="window.location.href='/?view=Main'">Main</div>
-    <div class="nav-item {'selected' if st.session_state.view == 'Comparison' else ''}" onclick="window.location.href='/?view=Comparison'">Comparison</div>
+    <div class="nav-item {'selected' if selected_view == 'Main' else ''}">Main</div>
+    <div class="nav-item {'selected' if selected_view == 'Comparison' else ''}">Comparison</div>
     """, unsafe_allow_html=True)
 
-# Determine the selected view from query parameters
-selected_view = st.experimental_get_query_params().get('view', [st.session_state.view])[0]
-
-# Update session state based on the selected view
-st.session_state.view = selected_view
-
 # Main content area based on the selected view
-if st.session_state.view == "Main":
+if selected_view == "Main":
     # Sidebar Inputs in the first column
     logo_url = "little-john-logo.png"
     st.sidebar.image(logo_url, use_column_width=True)
@@ -605,8 +607,11 @@ if st.session_state.view == "Main":
     commission = st.sidebar.slider('Commission (%)', min_value=0.0, max_value=0.05, value=0.002, step=0.001)
     
     display_main_content()
-elif st.session_state.view == "Comparison":
+elif selected_view == "Comparison":
     display_comparison_content()
+
+
+
 
 
 
