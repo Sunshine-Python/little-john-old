@@ -2,5 +2,11 @@ streamlit
 yfinance
 backtesting
 pandas
+numpy
 ta
 plotly
+datetime
+pandas_market_calendars
+matplotlib
+ipywidgets
+pyfiglet
