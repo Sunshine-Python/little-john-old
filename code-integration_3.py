@@ -178,7 +178,12 @@ def plot_stock_price_and_volume(ticker, start_date, end_date):
     
     fig.show()
 
-
+interact(
+    plot_stock_price_and_volume,
+    ticker=widgets.Text(value='AAPL', description='Ticker:'),
+    start_date=widgets.DatePicker(description='Start Date:', value=pd.to_datetime('2024-06-01')),
+    end_date=widgets.DatePicker(description='End Date:', value=pd.to_datetime('today'))
+)
 
 
 
