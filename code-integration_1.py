@@ -520,6 +520,10 @@ st.title('Advanced Stock Trading Strategy Backtester')
 
 
 
+
+
+
+
 # Define a function to display the comparison content
 def display_comparison_content():
     st.title('Comparison View')
@@ -549,17 +553,27 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# Apply the selected style dynamically
+# Initialize session state for view selection
+if 'view' not in st.session_state:
+    st.session_state.view = 'Main'
+
+# Sidebar navigation items
+def set_view(view):
+    st.session_state.view = view
+
 st.sidebar.markdown(f"""
-    <div class="nav-item {'selected' if st.experimental_get_query_params().get('view') == ['Main'] else ''}" onclick="window.location.href='/?view=Main'">Main</div>
-    <div class="nav-item {'selected' if st.experimental_get_query_params().get('view') == ['Comparison'] else ''}" onclick="window.location.href='/?view=Comparison'">Comparison</div>
+    <div class="nav-item {'selected' if st.session_state.view == 'Main' else ''}" onclick="window.location.href='/?view=Main'">Main</div>
+    <div class="nav-item {'selected' if st.session_state.view == 'Comparison' else ''}" onclick="window.location.href='/?view=Comparison'">Comparison</div>
     """, unsafe_allow_html=True)
 
-# Determine the selected view from query parameters
-selected_view = st.experimental_get_query_params().get('view', ['Main'])[0]
+if st.sidebar.button("Main"):
+    set_view('Main')
+
+if st.sidebar.button("Comparison"):
+    set_view('Comparison')
 
 # Main content area based on the selected view
-if selected_view == "Main":
+if st.session_state.view == "Main":
     # Sidebar Inputs in the first column
     logo_url = "little-john-logo.png"
     st.sidebar.image(logo_url, use_column_width=True)
@@ -583,8 +597,11 @@ if selected_view == "Main":
     commission = st.sidebar.slider('Commission (%)', min_value=0.0, max_value=0.05, value=0.002, step=0.001)
     
     display_main_content()
-elif selected_view == "Comparison":
+elif st.session_state.view == "Comparison":
     display_comparison_content()
+
+
+
 
 
 
