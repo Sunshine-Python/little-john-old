@@ -1,3 +1,6 @@
+
+# IMPORTS
+
 import streamlit as st
 import yfinance as yf
 from backtesting import Backtest, Strategy
@@ -13,6 +16,8 @@ import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 from ipywidgets import interact, interactive, fixed, widgets
 
+
+# CSS STYLE SHEET FOR CUSTOM DESIGN
 
 st.set_page_config(layout="wide")
 
