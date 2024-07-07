@@ -546,8 +546,12 @@ def display_comparison_content():
     st.title('Comparison View')
     st.write("This section can be used to compare different strategies or other comparisons.")
 
-# Create clickable options for "Main" and "Comparison" above the sidebar input
-selected_view = st.sidebar.radio("Select View", ["Main", "Comparison"])
+# Create selectable options for "Main" and "Comparison" in the sidebar
+selected_view = st.sidebar.selectbox(
+    "",
+    ["Main", "Comparison"],
+    format_func=lambda x: f"{x.capitalize()}"
+)
 
 # Sidebar Inputs in the first column
 logo_url = "little-john-logo.png"
