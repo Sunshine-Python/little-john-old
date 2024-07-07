@@ -43,11 +43,6 @@ def fetch_data(ticker, start_date, end_date):
 
     # Calculate the date 60 days ago
     sixty_days_ago = datetime.now() - timedelta(days=60)
-
-    # If start_date is more than 60 days ago, adjust it
-    if start_date < sixty_days_ago:
-        print(f"Warning: Adjusted start date to {sixty_days_ago.strftime('%Y-%m-%d')} due to YFinance limitations.")
-        start_date = sixty_days_ago
     
     try:
         data = yf.download(ticker, start=start_date, end=end_date, interval='5m', progress=False)
