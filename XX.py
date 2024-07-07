@@ -42,7 +42,7 @@ def fetch_data(ticker, start_date, end_date):
         end_date = datetime.strptime(end_date, '%Y-%m-%d')
 
     # Calculate the date 60 days ago
-    sixty_days_ago = datetime.now() - timedelta(days=60)
+    sixty_days_ago = datetime.now() - timedelta(days=59)
     
     try:
         data = yf.download(ticker, start=start_date, end=end_date, interval='5m', progress=False)
@@ -76,7 +76,7 @@ def fetch_data_pv(ticker, start_date, end_date):
         end_date = datetime.strptime(end_date, '%Y-%m-%d')
 
     # Calculate the date 60 days ago
-    sixty_days_ago = datetime.now() - timedelta(days=60)
+    sixty_days_ago = datetime.now() - timedelta(days=59)
     
     try:
         data = yf.download(ticker, start=start_date, end=end_date, interval='5m')
@@ -510,7 +510,7 @@ with st.sidebar:
     ticker = st.text_input('Enter stock ticker', value='AAPL')
 
     # Calculate the date 60 days ago
-    sixty_days_ago = datetime.now() - timedelta(days=60)
+    sixty_days_ago = datetime.now() - timedelta(days=59)
     
     col1, col2 = st.columns(2)
     with col1:
