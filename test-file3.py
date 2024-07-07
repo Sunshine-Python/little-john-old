@@ -549,7 +549,7 @@ def display_metric(label, value, delta=None, delta_color="normal", show_arrow=Fa
 
 
 # Main content area
-ticker_data = fetch_data(ticker, start_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d'))
+ticker_data = fetch_data(ticker, start_date, end_date)
 
 if ticker_data is not None and not ticker_data.empty:
     # Map strategy names to classes
