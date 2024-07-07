@@ -596,6 +596,21 @@ if ticker_data is not None and not ticker_data.empty:
         bt = Backtest(ticker_data, selected_strategy, cash=cash, commission=commission)
         output = bt.run()
 
+
+
+
+def display_metrics(output):
+            metrics = ['Start', 'End', 'Duration', 'Exposure Time [%]', 'Equity Final [$]', 'Equity Peak [$]', 
+               'Return [%]', 'Buy & Hold Return [%]', 'Return (Ann.) [%]', 'Volatility (Ann.) [%]', 
+               'Sharpe Ratio', 'Sortino Ratio', 'Calmar Ratio', 'Max. Drawdown [%]', 'Avg. Drawdown [%]', 
+               'Max. Drawdown Duration', 'Avg. Drawdown Duration', 'Trades', 'Win Rate [%]', 
+               'Best Trade [%]', 'Worst Trade [%]', 'Avg. Trade [%]', 'Max. Trade Duration', 
+               'Avg. Trade Duration', 'Profit Factor', 'Expectancy [%]']
+    
+            return {k: output[k] for k in metrics if k in output}
+
+
+    
         # First row: Strategy Parameters and Visualization
         row1_col1, row1_col2 = st.columns([1, 1])
 
@@ -609,27 +624,13 @@ if ticker_data is not None and not ticker_data.empty:
             strategy_viz(strategy_option)
 
         # Second row: Performance Metrics
-        st.subheader('Performance Metrics')
-        key_metrics = ['Start', 'End', 'Duration', 'Exposure Time [%]', 'Equity Final [$]', 'Equity Peak [$]', 
-                        'Return [%]', 'Buy & Hold Return [%]', 'Return (Ann.) [%]', 'Volatility (Ann.) [%]', 
-                        'Sharpe Ratio', 'Sortino Ratio', 'Calmar Ratio', 'Max. Drawdown [%]', 'Avg. Drawdown [%]', 
-                        'Max. Drawdown Duration', 'Avg. Drawdown Duration', 'Trades', 'Win Rate [%]', 
-                        'Best Trade [%]', 'Worst Trade [%]', 'Avg. Trade [%]', 'Max. Trade Duration', 
-                        'Avg. Trade Duration', 'Profit Factor', 'Expectancy [%]']
-
-        metrics = output.drop(['_strategy', '_equity_curve', '_trades'])
-        selected_metrics = {k: output[k] for k in key_metrics if k in output}
-        df_metrics = pd.DataFrame(selected_metrics, index=['Value']).T
-
-
-def display_metrics(output):
-    metrics = ['Start', 'End', 'Duration', 'Exposure Time [%]', 'Equity Final [$]', 'Equity Peak [$]', 
-               'Return [%]', 'Buy & Hold Return [%]', 'Return (Ann.) [%]', 'Volatility (Ann.) [%]', 
-               'Sharpe Ratio', 'Sortino Ratio', 'Calmar Ratio', 'Max. Drawdown [%]', 'Avg. Drawdown [%]', 
-               'Max. Drawdown Duration', 'Avg. Drawdown Duration', 'Trades', 'Win Rate [%]', 
-               'Best Trade [%]', 'Worst Trade [%]', 'Avg. Trade [%]', 'Max. Trade Duration', 
-               'Avg. Trade Duration', 'Profit Factor', 'Expectancy [%]']
-    
+        
+            st.subheader('Performance Metrics')
+            selected_metrics = display_metrics(output)
+            df_metrics = pd.DataFrame(selected_metrics, index=['Value']).T
+        
+        
+   
 
 
 
