@@ -1,3 +1,5 @@
+# IMPORTS
+
 import streamlit as st
 import yfinance as yf
 from backtesting import Backtest, Strategy
@@ -8,6 +10,18 @@ import numpy as np
 import ta
 import plotly.graph_objects as go
 from datetime import datetime, timedelta
+import pandas_market_calendars as mcal
+import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
+from ipywidgets import interact, interactive, fixed, widgets
+%matplotlib inline
+
+nyse = mcal.get_calendar('NYSE')
+# full_calendar = nyse.schedule[start_date:end_date]
+
+
+# FETCH DATA
+
 
 def fetch_data(ticker, start_date, end_date):
     """
