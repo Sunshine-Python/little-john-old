@@ -524,6 +524,13 @@ st.title('Advanced Stock Trading Strategy Backtester')
 
 
 
+
+
+# Define a function to display the main content
+def display_main_content():
+    st.title('Main View')
+    st.write("This section displays the main content.")
+
 # Define a function to display the comparison content
 def display_comparison_content():
     st.title('Comparison View')
@@ -550,6 +557,10 @@ st.markdown("""
         background-color: #e0e0e0;
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
     }
+    .stRadio > div {
+        display: flex;
+        flex-direction: column;
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -557,20 +568,17 @@ st.markdown("""
 if 'view' not in st.session_state:
     st.session_state.view = 'Main'
 
-# Sidebar navigation items
-def set_view(view):
-    st.session_state.view = view
-
+# Sidebar navigation items with dynamic style
 st.sidebar.markdown(f"""
     <div class="nav-item {'selected' if st.session_state.view == 'Main' else ''}" onclick="window.location.href='/?view=Main'">Main</div>
     <div class="nav-item {'selected' if st.session_state.view == 'Comparison' else ''}" onclick="window.location.href='/?view=Comparison'">Comparison</div>
     """, unsafe_allow_html=True)
 
-if st.sidebar.button("Main"):
-    set_view('Main')
+# Determine the selected view from query parameters
+selected_view = st.experimental_get_query_params().get('view', [st.session_state.view])[0]
 
-if st.sidebar.button("Comparison"):
-    set_view('Comparison')
+# Update session state based on the selected view
+st.session_state.view = selected_view
 
 # Main content area based on the selected view
 if st.session_state.view == "Main":
@@ -599,6 +607,10 @@ if st.session_state.view == "Main":
     display_main_content()
 elif st.session_state.view == "Comparison":
     display_comparison_content()
+
+
+
+
 
 
 
