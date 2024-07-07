@@ -575,28 +575,6 @@ def display_metric(label, value, delta=None, delta_color="normal", show_arrow=Fa
 
 
 # Main content area
-ticker_data = fetch_data(ticker, start_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d'))
-
-if ticker_data is not None and not ticker_data.empty:
-    # Map strategy names to classes
-    strategy_map = {
-        'Buy and Hold': BuyAndHoldStrategy,
-        'SMA Cross': SmaCross,
-        'RSI': RsiStrategy,
-        'MACD': MacdStrategy,
-        'Bollinger Bands': BollingerBandsStrategy,
-        'Mean Reversion': MeanReversionStrategy,
-        'Momentum': MomentumStrategy,
-        'VWAP': VwapStrategy,
-        'Stochastic': StochasticStrategy
-    }
-
-    try:
-        selected_strategy = strategy_map[strategy_option]
-        bt = Backtest(ticker_data, selected_strategy, cash=cash, commission=commission)
-        output = bt.run()
-
-
 
 def display_metrics(output):
     metrics = ['Start', 'End', 'Duration', 'Exposure Time [%]', 'Equity Final [$]', 'Equity Peak [$]', 
@@ -607,31 +585,6 @@ def display_metrics(output):
                'Avg. Trade Duration', 'Profit Factor', 'Expectancy [%]']
     
     return {k: output[k] for k in metrics if k in output}
-
-
-
-
-    
-        # First row: Strategy Parameters and Visualization
-        row1_col1, row1_col2 = st.columns([1, 1])
-
-        with row1_col1:
-            st.subheader("Strategy Parameters")
-            strategy_description(strategy_option)
-            strategy_params_and_viz(strategy_option)
-
-        with row1_col2:
-            st.subheader("Visualization")
-            strategy_viz(strategy_option)
-
-        # Second row: Performance Metrics
-            st.subheader('Performance Metrics')
-            selected_metrics = display_metrics(output)
-            df_metrics = pd.DataFrame(selected_metrics, index=['Value']).T
-        
-        
-
-
 
 
 
@@ -658,6 +611,50 @@ def plot_equity_curve(output, title):
         margin=dict(l=30, r=30)
     )
     return fig
+    
+
+
+ticker_data = fetch_data(ticker, start_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d'))
+
+if ticker_data is not None and not ticker_data.empty:
+    # Map strategy names to classes
+    strategy_map = {
+        'Buy and Hold': BuyAndHoldStrategy,
+        'SMA Cross': SmaCross,
+        'RSI': RsiStrategy,
+        'MACD': MacdStrategy,
+        'Bollinger Bands': BollingerBandsStrategy,
+        'Mean Reversion': MeanReversionStrategy,
+        'Momentum': MomentumStrategy,
+        'VWAP': VwapStrategy,
+        'Stochastic': StochasticStrategy
+    }
+
+    try:
+        selected_strategy = strategy_map[strategy_option]
+        bt = Backtest(ticker_data, selected_strategy, cash=cash, commission=commission)
+        output = bt.run()
+
+
+    
+        # First row: Strategy Parameters and Visualization
+        row1_col1, row1_col2 = st.columns([1, 1])
+
+        with row1_col1:
+            st.subheader("Strategy Parameters")
+            strategy_description(strategy_option)
+            strategy_params_and_viz(strategy_option)
+
+        with row1_col2:
+            st.subheader("Visualization")
+            strategy_viz(strategy_option)
+
+        # Second row: Performance Metrics
+            st.subheader('Performance Metrics')
+            selected_metrics = display_metrics(output)
+            df_metrics = pd.DataFrame(selected_metrics, index=['Value']).T
+        
+    
 
         
 
