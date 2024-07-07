@@ -22,25 +22,20 @@ nyse = mcal.get_calendar('NYSE')
 # FETCH DATA
 
 def fetch_data(ticker, start_date, end_date):
-    try:
-        data = yf.download(ticker, start=start_date, end=end_date, interval='5m')
+    data = yf.download(ticker, start=start_date, end=end_date, interval='5m')
+    
+    if 'Adj Close' in data.columns:
+        data = data.drop(columns=['Adj Close'])
 
-        if 'Adj Close' in data.columns:
-            data = data.drop(columns=['Adj Close'])
-
-        data.columns = ['Open', 'High', 'Low', 'Close', 'Volume']
-        data = data[data['Volume'] > 0]
-
-        data.index = data.index.tz_localize(None)
-
-        return data
-    except BrokenPipeError:
-        st.error("Error fetching data due to broken pipe. Please try again.")
+    data.columns = ['Open', 'High', 'Low', 'Close', 'Volume']
+    data = data[data['Volume'] > 0]
+    
+    data.index = data.index.tz_localize(None)
+    
+    return data
     except Exception as e:
         st.error(f"Error fetching data: {str(e)}")
-
-
-
+        return None
 
 def fetch_data_pv(ticker, start_date, end_date):
     data = yf.download(ticker, start=start_date, end=end_date, interval='5m')
@@ -56,6 +51,11 @@ def fetch_data_pv(ticker, start_date, end_date):
     data = data.rename(columns={'index': 'Datetime'})
     
     return data
+    except Exception as e:
+        st.error(f"Error fetching data: {str(e)}")
+        return None
+
+    
 
 
 
