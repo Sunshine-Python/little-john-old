@@ -35,34 +35,35 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# Add CSS for styling the navigation options
+
+
+
+
+# Add custom CSS for styling the navigation options
 st.markdown("""
     <style>
-    .css-1d391kg {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: #ffffff;
-        background-color: #2e8b57;
+    .nav-item {
+        font-size: 1rem;
+        font-weight: bold;
+        padding: 10px 15px;
+        margin: 5px 0;
         border-radius: 5px;
-        padding: 5px 10px;
+        cursor: pointer;
+        display: block;
     }
-    .css-1d391kg:hover {
-        background-color: #1c5f38;
+    .nav-item:hover {
+        background-color: #f0f0f0;
+    }
+    .nav-item.selected {
+        background-color: #e0e0e0;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
     }
     .stRadio > div {
         display: flex;
-        justify-content: space-evenly;
+        flex-direction: column;
     }
     </style>
     """, unsafe_allow_html=True)
-
-# Create clickable options for "Main" and "Comparison" in the sidebar
-selected_view = st.sidebar.radio(
-    "",
-    ["Main", "Comparison"],
-    format_func=lambda x: f"{x.capitalize()}",
-    horizontal=True
-)
 
 
 
@@ -546,8 +547,8 @@ def display_comparison_content():
     st.title('Comparison View')
     st.write("This section can be used to compare different strategies or other comparisons.")
 
-# Create selectable options for "Main" and "Comparison" in the sidebar
-selected_view = st.sidebar.selectbox(
+# Create the navigation options
+selected_view = st.sidebar.radio(
     "",
     ["Main", "Comparison"],
     format_func=lambda x: f"{x.capitalize()}"
@@ -559,6 +560,26 @@ st.sidebar.image(logo_url, use_column_width=True)
 
 st.sidebar.header('📊 Stock Selection')
 ticker = st.sidebar.text_input('Enter stock ticker', value='AAPL')
+
+# Apply the selected style dynamically
+st.sidebar.markdown(f"""
+    <style>
+    .nav-item[data-option="{selected_view}"] {{
+        background-color: #e0e0e0;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    }}
+    </style>
+    """, unsafe_allow_html=True)
+
+# Sidebar navigation items
+st.sidebar.markdown(f"""
+    <div class="nav-item" data-option="Main" onclick="window.location.href='/?option=Main'">Main</div>
+    <div class="nav-item" data-option="Comparison" onclick="window.location.href='/?option=Comparison'">Comparison</div>
+    """, unsafe_allow_html=True)
+
+
+
+    
 
 # Calculate the date 60 days ago
 sixty_days_ago = datetime.now() - timedelta(days=59)
