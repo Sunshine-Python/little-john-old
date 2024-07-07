@@ -480,11 +480,15 @@ st.sidebar.image(logo_url, use_column_width=True)
 with st.sidebar:
     st.header('📊 Stock Selection')
     ticker = st.text_input('Enter stock ticker', value='AAPL')
+
+    # Calculate the date 60 days ago
+    sixty_days_ago = datetime.now() - timedelta(days=60)
+    
     col1, col2 = st.columns(2)
     with col1:
-        start_date = st.date_input('Start Date', value=pd.to_datetime('2010-01-01'))
+        start_date = st.date_input('Start Date', value=sixty_days_ago, min_value=sixty_days_ago, max_value=datetime.now())
     with col2:
-        end_date = st.date_input('End Date', value=pd.to_datetime('2020-01-01'))
+        end_date = st.date_input('End Date', value=datetime.now(), min_value=sixty_days_ago, max_value=datetime.now())
 
     st.header('🧮 Strategy Selection')
     strategy_option = st.selectbox('Select Strategy', [
