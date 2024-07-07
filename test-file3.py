@@ -15,9 +15,6 @@ import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 from ipywidgets import interact, interactive, fixed, widgets
 
-# full_calendar = nyse.schedule[start_date:end_date]
-nyse = mcal.get_calendar('NYSE')
-
 
 # FETCH DATA
 
@@ -27,6 +24,11 @@ def fetch_data(ticker, start_date, end_date):
 
         if 'Adj Close' in data.columns:
             data = data.drop(columns=['Adj Close'])
+
+        # Check again if data is still empty
+        if data.empty:
+            st.error("No data available for the given period.")
+            return None
 
         data.columns = ['Open', 'High', 'Low', 'Close', 'Volume']
         data = data[data['Volume'] > 0]
@@ -45,6 +47,11 @@ def fetch_data_pv(ticker, start_date, end_date):
 
         if 'Adj Close' in data.columns:
             data = data.drop(columns=['Adj Close'])
+
+        # Check again if data is still empty
+        if data.empty:
+            st.error("No data available for the given period.")
+            return None
 
         data.columns = ['Open', 'High', 'Low', 'Close', 'Volume']
         
