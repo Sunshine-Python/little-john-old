@@ -32,7 +32,7 @@ st.markdown("""
 
 
 
-
+# FETCH DATA
 
 def fetch_data(ticker, start_date, end_date):
      # Convert start_date and end_date to datetime objects if they're strings
@@ -72,6 +72,39 @@ def fetch_data(ticker, start_date, end_date):
 
 
 
+
+def fetch_data_pv(ticker, start_date, end_date):
+    # Convert start_date and end_date to datetime objects if they're strings
+    if isinstance(start_date, str):
+        start_date = datetime.strptime(start_date, '%Y-%m-%d')
+    if isinstance(end_date, str):
+        end_date = datetime.strptime(end_date, '%Y-%m-%d')
+
+    # Calculate the date 60 days ago
+    sixty_days_ago = datetime.now() - timedelta(days=60)
+    
+    try:
+        data = yf.download(ticker, start=start_date, end=end_date, interval='5m')
+
+        if 'Adj Close' in data.columns:
+            data = data.drop(columns=['Adj Close'])
+
+        # Check again if data is still empty
+        if data.empty:
+            st.error("No data available for the given period.")
+            return None
+
+        data.columns = ['Open', 'High', 'Low', 'Close', 'Volume']
+        
+        data = data[data['Volume'] > 0]
+
+        data = data.reset_index()
+        data = data.rename(columns={'index': 'Datetime'})
+        
+        return data
+    except Exception as e:
+        st.error(f"Error fetching data: {str(e)}")
+        return None
 
 
 
