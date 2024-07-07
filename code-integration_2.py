@@ -618,16 +618,24 @@ if ticker_data is not None and not ticker_data.empty:
                         'Avg. Trade Duration', 'Profit Factor', 'Expectancy [%]']
 
         metrics = output.drop(['_strategy', '_equity_curve', '_trades'])
-        selected_metrics = {k: metrics[k] for k in key_metrics if k in metrics}
+        selected_metrics = {k: output[k] for k in key_metrics if k in output}
         df_metrics = pd.DataFrame(selected_metrics, index=['Value']).T
 
-        
 
+def display_metrics(output):
+    metrics = ['Start', 'End', 'Duration', 'Exposure Time [%]', 'Equity Final [$]', 'Equity Peak [$]', 
+               'Return [%]', 'Buy & Hold Return [%]', 'Return (Ann.) [%]', 'Volatility (Ann.) [%]', 
+               'Sharpe Ratio', 'Sortino Ratio', 'Calmar Ratio', 'Max. Drawdown [%]', 'Avg. Drawdown [%]', 
+               'Max. Drawdown Duration', 'Avg. Drawdown Duration', 'Trades', 'Win Rate [%]', 
+               'Best Trade [%]', 'Worst Trade [%]', 'Avg. Trade [%]', 'Max. Trade Duration', 
+               'Avg. Trade Duration', 'Profit Factor', 'Expectancy [%]']
+    
 
 
 
 
 # Define the function to plot the equity curve
+
 def plot_equity_curve(output, title):
     equity_curve = output['_equity_curve']
     
