@@ -520,7 +520,6 @@ st.title('Advanced Stock Trading Strategy Backtester')
 
 
 
-    
 # Define a function to display the comparison content
 def display_comparison_content():
     st.title('Comparison View')
@@ -538,6 +537,7 @@ st.markdown("""
         cursor: pointer;
         display: block;
         text-align: center;
+        background-color: #f8f9fa;
     }
     .nav-item:hover {
         background-color: #f0f0f0;
@@ -546,25 +546,17 @@ st.markdown("""
         background-color: #e0e0e0;
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
     }
-    .stRadio > div {
-        display: flex;
-        flex-direction: column;
-    }
     </style>
     """, unsafe_allow_html=True)
 
-# Create the navigation options
-selected_view = st.sidebar.radio(
-    "Select View",
-    ["Main", "Comparison"],
-    format_func=lambda x: f"{x.capitalize()}"
-)
-
-# Sidebar navigation items with dynamic style
+# Apply the selected style dynamically
 st.sidebar.markdown(f"""
-    <div class="nav-item {'selected' if selected_view == 'Main' else ''}" data-option="Main" onclick="window.location.href='/?option=Main'">Main</div>
-    <div class="nav-item {'selected' if selected_view == 'Comparison' else ''}" data-option="Comparison" onclick="window.location.href='/?option=Comparison'">Comparison</div>
+    <div class="nav-item {'selected' if st.experimental_get_query_params().get('view') == ['Main'] else ''}" onclick="window.location.href='/?view=Main'">Main</div>
+    <div class="nav-item {'selected' if st.experimental_get_query_params().get('view') == ['Comparison'] else ''}" onclick="window.location.href='/?view=Comparison'">Comparison</div>
     """, unsafe_allow_html=True)
+
+# Determine the selected view from query parameters
+selected_view = st.experimental_get_query_params().get('view', ['Main'])[0]
 
 # Main content area based on the selected view
 if selected_view == "Main":
@@ -593,6 +585,7 @@ if selected_view == "Main":
     display_main_content()
 elif selected_view == "Comparison":
     display_comparison_content()
+
 
 
 
